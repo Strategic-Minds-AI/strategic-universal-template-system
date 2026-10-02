@@ -5,7 +5,7 @@ import {
   LayoutDashboard, FolderKanban, Boxes, Wrench, FileCode2, Terminal,
   Package, ShieldCheck, Hammer, Server, CheckSquare, Plug,
   Brain, MonitorSmartphone, Globe, Gauge, ScrollText, Settings, Search, Factory,
-  Layers, Shield, Award, Workflow,
+  Layers, Shield, Award, Workflow, LayoutTemplate,
   ChevronLeft, ChevronRight, Menu, X,
 } from "lucide-react";
 import BrandLogo from "./BrandLogo.jsx";
@@ -17,7 +17,7 @@ const NAV = [
   { group: "Execution", items: [{ to: "/runs", label: "Run Console", icon: Terminal }, { to: "/artifacts", label: "Artifact Explorer", icon: Package }] },
   { group: "Quality", items: [{ to: "/validation", label: "Validation Center", icon: ShieldCheck }, { to: "/repair", label: "Repair Center", icon: Hammer }] },
   { group: "Operations", items: [{ to: "/provisioning-system", label: "Universal Provisioning", icon: Server }, { to: "/provisioning", label: "Provisioning Center", icon: Server }, { to: "/approvals", label: "Approvals", icon: CheckSquare }, { to: "/adapters", label: "Adapter Library", icon: Plug }] },
-  { group: "Intelligence", items: [{ to: "/agents", label: "Super Agents", icon: Brain }, { to: "/lead-scraper", label: "Lead Scraper", icon: Search }, { to: "/digital-dominance", label: "Digital Dominance", icon: Factory }, { to: "/bootstrap", label: "Bootstrap Wizard", icon: Wrench }, { to: "/consulting", label: "AI Consulting", icon: Brain }, { to: "/builder", label: "Frontend Factory", icon: MonitorSmartphone }, { to: "/industries", label: "Industry Packs", icon: Globe }] },
+  { group: "Intelligence", items: [{ to: "/agents", label: "Super Agents", icon: Brain }, { to: "/lead-scraper", label: "Lead Scraper", icon: Search }, { to: "/gallery", label: "Visual Gallery", icon: LayoutTemplate }, { to: "/digital-dominance", label: "Digital Dominance", icon: Factory }, { to: "/bootstrap", label: "Bootstrap Wizard", icon: Wrench }, { to: "/consulting", label: "AI Consulting", icon: Brain }, { to: "/builder", label: "Frontend Factory", icon: MonitorSmartphone }, { to: "/industries", label: "Industry Packs", icon: Globe }] },
   { group: "Admin", items: [{ to: "/usage", label: "Usage / Budgets", icon: Gauge }, { to: "/audit", label: "Audit / Receipts", icon: ScrollText }, { to: "/settings", label: "Settings", icon: Settings }] },
 ];
 

@@ -39,6 +39,7 @@ import AgentOperate from '@/pages/AgentOperate';
 import LeadScraper from '@/pages/LeadScraper';
 import DigitalDominance from '@/pages/DigitalDominance';
 import UniversalProvisioning from '@/pages/UniversalProvisioning';
+import VisualGallery from '@/pages/VisualGallery';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -97,6 +98,7 @@ const AuthenticatedApp = () => {
           <Route path="/lead-scraper" element={<LeadScraper />} />
           <Route path="/digital-dominance" element={<DigitalDominance />} />
           <Route path="/provisioning-system" element={<UniversalProvisioning />} />
+          <Route path="/gallery" element={<VisualGallery />} />
         </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />
