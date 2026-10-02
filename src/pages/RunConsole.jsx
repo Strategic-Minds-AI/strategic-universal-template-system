@@ -3,6 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Terminal, ArrowLeft, Activity, Zap, Clock, CheckCircle, XCircle, AlertCircle, Loader2 } from "lucide-react";
 import { StatusPill } from "@/components/factory/EntityListPage.jsx";
+import SectionPreviewBanner from "@/components/sectionRenders/SectionPreviewBanner.jsx";
+import ExecutionRender from "@/components/sectionRenders/ExecutionRender.jsx";
 
 export default function RunConsole() {
   const [params, setParams] = useSearchParams();
@@ -146,6 +148,7 @@ export default function RunConsole() {
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
+      <SectionPreviewBanner render={ExecutionRender} label="Execution" />
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <div className="xa-icon-chip"><Terminal className="w-5 h-5" /></div>

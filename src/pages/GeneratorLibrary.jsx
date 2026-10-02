@@ -5,6 +5,8 @@ import { buildAllDefinitions } from "@/lib/factory/generator/seedDefinitions.js"
 import { PREVIEW_STYLES } from "@/lib/gallery/previewStyles.js";
 import { loadConfig, themeToCssVars } from "@/lib/gallery/studioConfig.js";
 import VisualizerCard from "@/components/visualizer/VisualizerCard.jsx";
+import SectionPreviewBanner from "@/components/sectionRenders/SectionPreviewBanner.jsx";
+import GeneratorsRender from "@/components/sectionRenders/GeneratorsRender.jsx";
 
 export default function GeneratorLibrary() {
   const [items, setItems] = useState([]);
@@ -73,6 +75,7 @@ export default function GeneratorLibrary() {
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       <style>{PREVIEW_STYLES}</style>
+      <SectionPreviewBanner render={GeneratorsRender} label="Generators" />
       <div className="flex items-center justify-between mb-5 gap-4 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
           <div className="xa-icon-chip shrink-0"><Boxes className="w-5 h-5" /></div>

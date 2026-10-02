@@ -5,6 +5,8 @@ import { buildAllTemplatePacks } from "@/lib/factory/generator/seedTemplatePacks
 import { PREVIEW_STYLES } from "@/lib/gallery/previewStyles.js";
 import { loadConfig, themeToCssVars } from "@/lib/gallery/studioConfig.js";
 import VisualizerCard from "@/components/visualizer/VisualizerCard.jsx";
+import SectionPreviewBanner from "@/components/sectionRenders/SectionPreviewBanner.jsx";
+import RegistriesRender from "@/components/sectionRenders/RegistriesRender.jsx";
 
 const MODE_BADGE = { text: "text", file_tree: "files", code: "code", prompt: "prompt", document: "doc", config: "config", sql: "sql", ui_recipe: "recipe", workflow_recipe: "flow", provisioning_recipe: "prov", compound: "mix" };
 
@@ -43,6 +45,7 @@ export default function TemplateLibrary() {
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       <style>{PREVIEW_STYLES}</style>
+      <SectionPreviewBanner render={RegistriesRender} label="Registries" />
       <div className="flex items-center justify-between mb-5 gap-4 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
           <div className="xa-icon-chip shrink-0"><FileCode2 className="w-5 h-5" /></div>

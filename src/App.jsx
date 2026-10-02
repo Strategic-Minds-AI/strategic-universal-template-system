@@ -41,6 +41,7 @@ import DigitalDominance from '@/pages/DigitalDominance';
 import UniversalProvisioning from '@/pages/UniversalProvisioning';
 import VisualGallery from '@/pages/VisualGallery';
 import Visualizer from '@/pages/Visualizer';
+import VisualTour from '@/pages/VisualTour';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -101,6 +102,7 @@ const AuthenticatedApp = () => {
           <Route path="/provisioning-system" element={<UniversalProvisioning />} />
           <Route path="/gallery" element={<VisualGallery />} />
           <Route path="/visualizer" element={<Visualizer />} />
+          <Route path="/tour" element={<VisualTour />} />
         </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />
