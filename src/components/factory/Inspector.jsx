@@ -16,7 +16,7 @@ export default function Inspector({ selection, family, tokens, setTab, tab }) {
   const activeTab = tab || localTab;
 
   return (
-    <aside className="w-[340px] shrink-0 border-l border-border bg-background flex flex-col">
+    <aside className="w-full h-full flex flex-col">
       <div className="border-b border-border">
         <div className="flex overflow-x-auto xa-scroll">
           {TABS.map((t) => {

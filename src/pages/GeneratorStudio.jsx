@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Wrench, ArrowLeft, Play } from "lucide-react";
+import { Wrench, ArrowLeft, Play, Brain, Loader2, Sparkles, Video } from "lucide-react";
 import { StatusPill } from "@/components/factory/EntityListPage.jsx";
 
 const CATEGORIES = ["code", "ai", "business", "consulting", "marketing", "data", "infra", "design", "compound"];
@@ -31,6 +31,10 @@ export default function GeneratorStudio() {
   const [loading, setLoading] = useState(!!id);
   const [form, setForm] = useState({ name: "", generator_key: "", category: "business", description: "" });
   const [saving, setSaving] = useState(false);
+  const [aiMode, setAiMode] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -75,6 +79,68 @@ export default function GeneratorStudio() {
       setParams({ id: rec.id });
     } catch (e) { alert("Failed: " + (e?.message || "unknown")); }
     setSaving(false);
+  };
+
+  const createWithAI = async () => {
+    if (!aiPrompt.trim()) return;
+    setAiLoading(true); setAiError("");
+    try {
+      // AI generates a full generator definition from the description.
+      const aiRes = await base44.functions.invoke("vercelAI", {
+        prompt: `You are a generator architect for a factory platform. Based on this description, design a generator definition as JSON. Description: "${aiPrompt}". Return ONLY valid JSON with this exact shape: { "name": string, "generator_key": string (kebab-case), "category": string (one of: ${CATEGORIES.join(", ")}), "description": string, "capabilities": string[], "workflow_dag": { "nodes": [{ "id": string, "type": string (one of: transform, template, ai_generate, ai_evaluate, code_execute, test, validate_schema, validate_content, validate_security, validate_visual, adapter_read, adapter_write, approval, branch, fanout, reduce, package, checksum, export), "config": object }], "edges": [{ "from": string, "to": string }] }, "validation_policy": { "mandatory": string[] }, "model_policy": { "provider": "ai-gateway", "required": boolean } }. Design a sensible DAG with 4-8 nodes. No markdown, just the JSON object.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            generator_key: { type: "string" },
+            category: { type: "string" },
+            description: { type: "string" },
+            capabilities: { type: "array", items: { type: "string" } },
+            workflow_dag: {
+              type: "object",
+              properties: {
+                nodes: { type: "array", items: { type: "object", properties: { id: { type: "string" }, type: { type: "string" }, config: { type: "object" } } } },
+                edges: { type: "array", items: { type: "object", properties: { from: { type: "string" }, to: { type: "string" } } } },
+              },
+            },
+            validation_policy: { type: "object", properties: { mandatory: { type: "array", items: { type: "string" } } } },
+            model_policy: { type: "object", properties: { provider: { type: "string" }, required: { type: "boolean" } } },
+          },
+          required: ["name", "generator_key", "category", "workflow_dag"],
+        },
+      });
+      const config = typeof aiRes?.data === "string" ? JSON.parse(aiRes.data) : aiRes?.data || aiRes;
+      const key = (config.generator_key || "ai-generator").toLowerCase().replace(/\s+/g, "-");
+
+      const rec = await base44.entities.GeneratorDefinition.create({
+        generator_key: key,
+        name: config.name || "AI Generated Generator",
+        category: config.category || "business",
+        generator_type: key,
+        version: "1.0.0",
+        description: config.description || aiPrompt.slice(0, 200),
+        definition: {
+          id: key, name: config.name || "AI Generator", version: "1.0.0",
+          input_schema: { type: "object", properties: { name: { type: "string", minLength: 1 }, context: { type: "object" } }, required: ["name"] },
+          output_contract: { type: "object", required: ["body"] },
+          capabilities: config.capabilities || ["text_generation"],
+          workflow_dag: config.workflow_dag || standardDag(),
+          templates: [], adapters: [],
+          model_policy: config.model_policy || { provider: "ai-gateway", required: false, fallback: "NOT_CONFIGURED" },
+          validation_policy: config.validation_policy || { mandatory: ["schema", "completeness", "secret_scan", "artifact_integrity"] },
+          repair_policy: { max_rounds: 3, target_only: true },
+          security_policy: { secret_scan: true },
+          approval_policy: { required: false },
+          limits: { max_steps: 50, timeout_seconds: 120 },
+          observability: { step_logs: true, receipts: true },
+          export_policy: { formats: ["json"], immutable: true },
+        },
+        status: "draft",
+        capabilities: config.capabilities || ["text_generation"],
+      });
+      setParams({ id: rec.id });
+    } catch (e) { setAiError(e?.message || "AI generation failed"); }
+    finally { setAiLoading(false); }
   };
 
   if (id) {
@@ -131,9 +197,33 @@ export default function GeneratorStudio() {
         <div className="xa-icon-chip"><Wrench className="w-5 h-5" /></div>
         <div>
           <h1 className="text-xl font-black font-heading">Generator Studio</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Create a new versioned generator definition with a standard DAG.</p>
+          <p className="text-sm text-muted-foreground mt-0.5">Create a new versioned generator definition — manually or with AI.</p>
         </div>
       </div>
+
+      {/* Mode toggle */}
+      <div className="flex gap-2 mb-4">
+        <button onClick={() => setAiMode(false)} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${!aiMode ? "bg-foreground text-background" : "text-muted-foreground border border-border hover:bg-muted"}`}>
+          <Wrench className="w-4 h-4" /> Manual
+        </button>
+        <button onClick={() => setAiMode(true)} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${aiMode ? "bg-foreground text-background" : "text-muted-foreground border border-border hover:bg-muted"}`}>
+          <Brain className="w-4 h-4" /> AI-Powered
+        </button>
+      </div>
+
+      {aiMode ? (
+        <div className="xa-card p-6 space-y-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="w-4 h-4 text-[#0d2f96]" />
+            <span className="text-sm font-bold">Describe your generator — AI will design the full DAG</span>
+          </div>
+          <textarea value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} rows={4} placeholder="e.g. A generator that creates a landing page from a business description — it should research the industry, generate hero copy, create feature sections, validate accessibility, and export a complete HTML file." className="w-full px-3 py-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
+          {aiError && <div className="text-xs text-red-600 bg-red-50 rounded-lg p-2">{aiError}</div>}
+          <button onClick={createWithAI} disabled={aiLoading || !aiPrompt.trim()} className="xa-btn-primary text-sm w-full">
+            {aiLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> AI designing DAG…</> : <><Brain className="w-4 h-4" /> Generate Generator with AI</>}
+          </button>
+        </div>
+      ) : (
       <div className="xa-card p-6 space-y-4">
         <div>
           <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Name</label>
@@ -154,7 +244,8 @@ export default function GeneratorStudio() {
           <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="What this generator produces..." rows={3} className="w-full mt-1 px-3 py-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring" />
         </div>
         <button onClick={create} disabled={saving || !form.name.trim() || !form.generator_key.trim()} className="xa-btn-primary text-sm"><Play className="w-4 h-4" />{saving ? "Creating…" : "Create generator"}</button>
-      </div>
-    </div>
-  );
-}
+        </div>
+        )}
+        </div>
+        );
+        }

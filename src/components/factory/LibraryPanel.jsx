@@ -25,7 +25,7 @@ export default function LibraryPanel({ family, setFamily, selection, onSelect, o
   const selectedId = selection?.[family]?.id;
 
   return (
-    <aside className="w-[340px] shrink-0 border-r border-border bg-background flex flex-col">
+    <aside className="w-full h-full flex flex-col">
       <div className="p-3 border-b border-border space-y-2.5">
         <div className="flex items-center justify-between">
           <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pattern Library</h2>

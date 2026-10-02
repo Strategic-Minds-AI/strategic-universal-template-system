@@ -1,17 +1,20 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Boxes, Plus, Search, RefreshCw, Loader2 } from "lucide-react";
+import { Boxes, Plus, Search, RefreshCw, Loader2, Zap, Video, Brain } from "lucide-react";
 import { buildAllDefinitions } from "@/lib/factory/generator/seedDefinitions.js";
 import { PREVIEW_STYLES } from "@/lib/gallery/previewStyles.js";
 import { loadConfig, themeToCssVars } from "@/lib/gallery/studioConfig.js";
 import VisualizerCard from "@/components/visualizer/VisualizerCard.jsx";
-import { StatusPill } from "@/components/factory/EntityListPage.jsx";
 
 export default function GeneratorLibrary() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [runCounts, setRunCounts] = useState({});
+  const [live, setLive] = useState(false);
+  const mountedRef = useRef(true);
   const config = loadConfig();
   const themeVars = useMemo(() => themeToCssVars(config), []);
 
@@ -19,17 +22,50 @@ export default function GeneratorLibrary() {
     setLoading(true); setErr("");
     try {
       const page = await base44.entities.GeneratorDefinition.filter({}, { sort: "-created_date", limit: 100 });
+      if (!mountedRef.current) return;
       setItems(page.items || []);
     } catch (e) { setErr(e?.message || "load failed"); }
-    finally { setLoading(false); }
+    finally { if (mountedRef.current) setLoading(false); }
   };
-  useEffect(() => { reload(); }, []);
+
+  const loadRunCounts = async () => {
+    try {
+      const res = await base44.entities.GeneratorRun.aggregate({ groupBy: "generator_id", limit: 200 });
+      if (!mountedRef.current) return;
+      const map = {};
+      (res.rows || []).forEach((row) => { if (row.generator_id) map[row.generator_id] = row.count || 0; });
+      setRunCounts(map);
+    } catch { /* best-effort */ }
+  };
+
+  useEffect(() => {
+    mountedRef.current = true;
+    reload();
+    loadRunCounts();
+    return () => { mountedRef.current = false; };
+  }, []);
+
+  // Real-time subscription
+  useEffect(() => {
+    if (loading) return;
+    let unsub;
+    try {
+      unsub = base44.entities.GeneratorDefinition.subscribe(() => { setLive(true); reload(); });
+    } catch { /* best-effort */ }
+    return () => unsub?.();
+  }, [loading]);
+
+  const categories = useMemo(() => ["All", ...new Set(items.map((r) => r.category || "business").sort())], [items]);
 
   const filtered = useMemo(() => {
-    if (!query) return items;
-    const q = query.toLowerCase();
-    return items.filter((r) => (r.name || "").toLowerCase().includes(q) || (r.generator_key || "").toLowerCase().includes(q) || (r.category || "").toLowerCase().includes(q));
-  }, [items, query]);
+    let list = items;
+    if (category !== "All") list = list.filter((r) => (r.category || "business") === category);
+    if (query) {
+      const q = query.toLowerCase();
+      list = list.filter((r) => (r.name || "").toLowerCase().includes(q) || (r.generator_key || "").toLowerCase().includes(q) || (r.category || "").toLowerCase().includes(q));
+    }
+    return list;
+  }, [items, query, category]);
 
   const byCat = {};
   filtered.forEach((r) => { (byCat[r.category || "business"] = byCat[r.category || "business"] || []).push(r); });
@@ -41,8 +77,13 @@ export default function GeneratorLibrary() {
         <div className="flex items-center gap-3 min-w-0">
           <div className="xa-icon-chip shrink-0"><Boxes className="w-5 h-5" /></div>
           <div className="min-w-0">
-            <h1 className="text-xl font-black font-heading flex items-center gap-2">Generator Library <span className="xa-pill-badge" style={{ fontSize: 10 }}>registry</span></h1>
-            <p className="text-sm text-muted-foreground mt-0.5">Versioned generator definitions — DAG-compiled, validation-gated, reproducible.</p>
+            <h1 className="text-xl font-black font-heading flex items-center gap-2">Generator Library <span className="xa-pill-badge" style={{ fontSize: 10 }}>registry</span>
+              <span className="flex items-center gap-1 ml-1">
+                <span className={`w-2 h-2 rounded-full ${live ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+                <span className="text-[9px] font-bold uppercase tracking-wide text-muted-foreground">{live ? "Live" : "Snapshot"}</span>
+              </span>
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">Versioned generator definitions — DAG-compiled, validation-gated, reproducible. Includes video & AI visual render generators.</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -54,6 +95,15 @@ export default function GeneratorLibrary() {
           <button onClick={reload} className="p-2 rounded-lg border border-input hover:bg-muted" title="Reload"><RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /></button>
         </div>
       </div>
+
+      {/* Category tabs */}
+      {!loading && !err && items.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {categories.map((c) => (
+            <button key={c} onClick={() => setCategory(c)} className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all ${category === c ? "bg-foreground text-background" : "text-muted-foreground bg-muted hover:bg-muted/70"}`}>{c}</button>
+          ))}
+        </div>
+      )}
 
       {loading ? (
         <div className="xa-card p-6 text-center text-sm flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" />Loading…</div>

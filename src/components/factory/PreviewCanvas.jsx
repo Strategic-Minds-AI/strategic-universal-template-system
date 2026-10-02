@@ -1,132 +1,78 @@
-import React from "react";
-import { Smartphone, Tablet, Monitor } from "lucide-react";
+import React, { useMemo } from "react";
+import { Smartphone, Tablet, Monitor, Sparkles, Video, Brain } from "lucide-react";
+import { renderPreview, GALLERY_FAMILIES } from "@/lib/gallery/previewRenderer.js";
+import { loadConfig, themeToCssVars } from "@/lib/gallery/studioConfig.js";
+import { PREVIEW_STYLES } from "@/lib/gallery/previewStyles.js";
 
-export default function PreviewCanvas({ viewport, theme, selection, project }) {
+// Ceiling preview canvas: renders REAL visual previews via previewRenderer
+// instead of placeholder text. Supports desktop/mobile/recipe platforms,
+// brand theming, and AI-generated media overlays.
+export default function PreviewCanvas({ viewport, theme, selection, project, aiMedia, aiMediaType }) {
   const width = viewport?.width || 1280;
   const isMobile = width < 600;
   const isTablet = width >= 600 && width < 1024;
-
   const DeviceIcon = isMobile ? Smartphone : isTablet ? Tablet : Monitor;
+  const config = useMemo(() => loadConfig(), []);
 
-  // Render a lightweight composed preview from the selection.
-  const sel = selection || {};
-  const recipe = sel.experience_recipes;
-  const nav = sel.navigation_patterns;
-  const color = sel.color_systems;
-  const mobile = sel.mobile_patterns;
-  const desktop = sel.desktop_patterns;
+  // Pick a template from the selection or default to the first desktop pattern.
+  const template = useMemo(() => {
+    const families = GALLERY_FAMILIES;
+    if (isMobile) {
+      return families[1].items[0]; // first mobile archetype
+    }
+    return families[0].items[0]; // first desktop archetype
+  }, [isMobile]);
+
+  const platform = isMobile ? "mobile" : "desktop";
+  const previewHtml = useMemo(() => renderPreview(template, platform, config), [template, platform, config]);
 
   return (
-    <div className="flex-1 flex flex-col bg-[#F9FAFB] overflow-hidden">
-      <div className="h-10 shrink-0 border-b border-border bg-background flex items-center justify-between px-4">
+    <div className="flex-1 flex flex-col bg-[#F9FAFB] overflow-hidden relative">
+      <style>{PREVIEW_STYLES}</style>
+      {/* Preview toolbar */}
+      <div className="h-10 shrink-0 border-b border-border bg-background flex items-center justify-between px-4 z-10">
         <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
           <DeviceIcon className="w-3.5 h-3.5" />
           {viewport?.label || "1280"}px
           <span className="text-muted-foreground/50">·</span>
           <span className="capitalize">{theme}</span>
+          <span className="text-muted-foreground/50">·</span>
+          <span className="font-mono text-[10px]">{template?.id || "default"}</span>
         </div>
-        <div className="text-[10px] font-mono text-muted-foreground">
-          {recipe ? `${recipe.id} · ${recipe.name}` : "No recipe selected"}
+        <div className="flex items-center gap-2">
+          {aiMedia && (
+            <span className="flex items-center gap-1 text-[10px] font-bold text-[#0d2f96] bg-[#e6f0ff] px-2 py-0.5 rounded-full">
+              {aiMediaType === "video" ? <Video className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
+              AI {aiMediaType}
+            </span>
+          )}
+          <span className="text-[10px] font-mono text-muted-foreground">LIVE PREVIEW</span>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto xa-scroll flex items-start justify-center p-6">
-        <div
-          className="bg-white border border-border rounded-2xl shadow-lg transition-all duration-300 overflow-hidden"
-          style={{ width: Math.min(width, 1600), maxWidth: "100%" }}
-        >
-          {/* Preview surface */}
-          <PreviewContent
-            isMobile={isMobile}
-            isTablet={isTablet}
-            selection={sel}
-            project={project}
-            color={color}
-            nav={nav}
-            mobile={mobile}
-            desktop={desktop}
+      {/* Preview surface */}
+      <div className="flex-1 overflow-auto xa-scroll flex items-start justify-center p-4 md:p-6">
+        <div className="relative" style={{ width: Math.min(width, 1400), maxWidth: "100%" }}>
+          {/* AI media overlay */}
+          {aiMedia && (
+            <div className={`absolute z-20 ${isMobile ? "top-2 right-2 w-32" : "top-4 right-4 w-48"} rounded-lg overflow-hidden border-2 border-[#0059ff] shadow-lg`}>
+              {aiMediaType === "video" ? (
+                <video src={aiMedia} autoPlay loop muted className="w-full" />
+              ) : (
+                <img src={aiMedia} alt="AI render" className="w-full" />
+              )}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2 py-1">
+                <span className="text-[8px] font-bold text-white flex items-center gap-1"><Brain className="w-2 h-2" /> AI RENDER</span>
+              </div>
+            </div>
+          )}
+          {/* Real preview render */}
+          <div
+            className="bg-white border border-border rounded-2xl shadow-lg overflow-hidden vg-scope"
+            style={useMemo(() => themeToCssVars(config), [config])}
+            dangerouslySetInnerHTML={{ __html: previewHtml }}
           />
         </div>
-      </div>
-    </div>
-  );
-}
-
-function PreviewContent({ isMobile, isTablet, selection, project, color, nav, mobile, desktop }) {
-  const recipeName = selection.experience_recipes?.name || "Experience Recipe";
-  const flow = selection.experience_recipes?.canonical_flow || "home > detail > action > confirmation";
-
-  return (
-    <div className="flex flex-col" style={{ minHeight: 480 }}>
-      {/* Top nav bar */}
-      <div className="h-12 border-b border-border flex items-center justify-between px-4 bg-white">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#80b3ff] to-[#0d2f96]" />
-          <span className="text-xs font-bold">[BRAND_NAME]</span>
-        </div>
-        {!isMobile && (
-          <div className="flex items-center gap-4 text-[11px] font-medium text-muted-foreground">
-            <span>Home</span><span>Features</span><span>Pricing</span><span>About</span>
-          </div>
-        )}
-        <button className="xa-btn-primary text-[10px]" style={{ padding: "6px 12px" }}>[PRIMARY_CTA]</button>
-      </div>
-
-      {/* Hero */}
-      <div className="px-6 py-10 text-center bg-gradient-to-b from-[#e6f0ff]/40 to-white">
-        <span className="xa-pill-badge mb-3" style={{ fontSize: 9 }}>{selection.domain_packs?.name || "Domain Pack"}</span>
-        <h1 className="font-heading font-black text-2xl md:text-3xl text-foreground leading-tight">
-          [HEADLINE_VALUE_PROPOSITION]
-        </h1>
-        <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-          [SUBHEADLINE_SUPPORTING_COPY]
-        </p>
-        <div className="flex items-center justify-center gap-2 mt-4">
-          <button className="xa-btn-primary text-xs">[PRIMARY_CTA]</button>
-          <button className="xa-btn-outline text-xs">[SECONDARY_CTA]</button>
-        </div>
-      </div>
-
-      {/* Recipe flow strip */}
-      <div className="px-4 py-3 border-y border-border bg-[#FAFAFA]">
-        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Experience Recipe · {recipeName}</div>
-        <div className="flex items-center flex-wrap gap-1.5 text-[10px] font-mono text-muted-foreground">
-          {flow.split(">").map((step, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <span className="text-[#0d2f96]">›</span>}
-              <span className="px-1.5 py-0.5 rounded bg-white border border-border">{step.trim()}</span>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      {/* Feature grid (responsive transform) */}
-      <div className={`p-5 grid gap-3 ${isMobile ? "grid-cols-1" : isTablet ? "grid-cols-2" : "grid-cols-3"}`}>
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="xa-card xa-card-subtle p-4">
-            <div className="xa-icon-chip mb-3" style={{ width: 36, height: 36 }}>
-              <span className="text-xs font-bold text-[#0d2f96]">0{i}</span>
-            </div>
-            <div className="text-sm font-bold text-foreground">[FEATURE_{i}_TITLE]</div>
-            <div className="text-xs text-muted-foreground mt-1">[FEATURE_{i}_DESCRIPTION]</div>
-          </div>
-        ))}
-      </div>
-
-      {/* State matrix hint */}
-      <div className="px-5 py-3 border-t border-border bg-white">
-        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Required States</div>
-        <div className="flex flex-wrap gap-1.5">
-          {["default", "loading", "empty", "error", "disabled", "success"].map((s) => (
-            <span key={s} className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border text-muted-foreground">{s}</span>
-          ))}
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="px-5 py-4 border-t border-border bg-[#FAFAFA] flex items-center justify-between">
-        <span className="text-[10px] text-muted-foreground">[FOOTER_COPY]</span>
-        <span className="text-[10px] font-mono text-muted-foreground">UI_ONLY · BACKEND_REQUIRED</span>
       </div>
     </div>
   );
