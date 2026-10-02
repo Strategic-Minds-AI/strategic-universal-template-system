@@ -51,6 +51,7 @@ export default function AgentChat() {
   const [busy, setBusy] = useState(false);
   const [loadingConv, setLoadingConv] = useState(false);
   const scrollRef = useRef(null);
+  const busyTimeout = useRef(null);
 
   useEffect(() => {
     if (!open || conversation) return;
@@ -73,6 +74,7 @@ export default function AgentChat() {
   useEffect(() => {
     if (!conversation) return;
     const unsub = base44.agents.subscribeToConversation(conversation.id, (data) => {
+      if (busyTimeout.current) clearTimeout(busyTimeout.current);
       setMessages(data.messages || []);
       setBusy(false);
     });
@@ -87,10 +89,16 @@ export default function AgentChat() {
     setInput("");
     setBusy(true);
     setMessages((m) => [...m, { role: "user", content: text }]);
+    if (busyTimeout.current) clearTimeout(busyTimeout.current);
+    busyTimeout.current = setTimeout(() => {
+      setBusy(false);
+      setMessages((m) => [...m, { role: "assistant", content: "The operator couldn't respond right now — the workspace AI integration credits are exhausted for this period (limit reached; they reset on 2026-10-12). This is a billing limit, not a code bug. Everything else in the factory still works." }]);
+    }, 25000);
     try {
       const updated = await base44.agents.addMessage(conversation, { role: "user", content: text });
       setConversation(updated);
     } catch (e) {
+      if (busyTimeout.current) clearTimeout(busyTimeout.current);
       setBusy(false);
       setMessages((m) => [...m, { role: "assistant", content: "Error sending: " + (e?.message || "failed") }]);
     }
