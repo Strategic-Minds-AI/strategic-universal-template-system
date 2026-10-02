@@ -20,6 +20,7 @@ export default function ProvisioningCenter() {
       ]}
       emptyTitle="No provisioning plans"
       emptyHint="Plans are produced by provisioning generators (dry-run by default)."
+      subscribeEntity="ProvisioningPlan"
     />
   );
 }

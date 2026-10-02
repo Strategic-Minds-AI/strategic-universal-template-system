@@ -13,6 +13,7 @@ export default function TemplateLibrary() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [query, setQuery] = useState("");
+  const [live, setLive] = useState(false);
   const config = loadConfig();
   const themeVars = useMemo(() => themeToCssVars(config), []);
 
@@ -25,6 +26,13 @@ export default function TemplateLibrary() {
     finally { setLoading(false); }
   };
   useEffect(() => { reload(); }, []);
+
+  // Real-time subscription
+  useEffect(() => {
+    let unsub;
+    try { unsub = base44.entities.TemplatePack?.subscribe?.(() => { setLive(true); reload(); }); } catch { /* */ }
+    return () => { try { unsub?.(); } catch {} };
+  }, []);
 
   const filtered = useMemo(() => {
     if (!query) return items;
@@ -39,7 +47,12 @@ export default function TemplateLibrary() {
         <div className="flex items-center gap-3 min-w-0">
           <div className="xa-icon-chip shrink-0"><FileCode2 className="w-5 h-5" /></div>
           <div className="min-w-0">
-            <h1 className="text-xl font-black font-heading">Template Library</h1>
+            <h1 className="text-xl font-black font-heading flex items-center gap-2">Template Library
+              <span className="flex items-center gap-1">
+                <span className={`w-2 h-2 rounded-full ${live ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+                <span className="text-[9px] font-bold uppercase tracking-wide text-muted-foreground">{live ? "Live" : "Snapshot"}</span>
+              </span>
+            </h1>
             <p className="text-sm text-muted-foreground mt-0.5">Versioned template packs — text, file-tree, code, prompt, document, config, recipes.</p>
           </div>
         </div>

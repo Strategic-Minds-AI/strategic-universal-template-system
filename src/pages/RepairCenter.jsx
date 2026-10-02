@@ -19,6 +19,7 @@ export default function RepairCenter() {
       ]}
       emptyTitle="No repair tasks"
       emptyHint="Repair tasks are created when validation fails and a responsible step is identified."
+      subscribeEntity="RepairTask"
     />
   );
 }

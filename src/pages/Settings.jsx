@@ -21,6 +21,13 @@ export default function Settings() {
 
   useEffect(() => { load(); }, []);
 
+  // Real-time: reload tenants on change.
+  useEffect(() => {
+    let unsub;
+    try { unsub = base44.entities.Tenant?.subscribe?.(() => load()); } catch { /* */ }
+    return () => { try { unsub?.(); } catch {} };
+  }, []);
+
   const createTenant = async () => {
     if (!name.trim()) return;
     try {

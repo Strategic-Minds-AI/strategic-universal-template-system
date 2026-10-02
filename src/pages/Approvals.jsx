@@ -19,6 +19,13 @@ export default function Approvals() {
 
   useEffect(() => { load(); }, [load]);
 
+  // Real-time: reload on approval changes.
+  useEffect(() => {
+    let unsub;
+    try { unsub = base44.entities.Approval?.subscribe?.(() => load()); } catch { /* */ }
+    return () => { try { unsub?.(); } catch {} };
+  }, [load]);
+
   const resolve = async (id, status) => {
     setBusy(id);
     try {

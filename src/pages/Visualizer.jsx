@@ -50,8 +50,18 @@ export default function Visualizer() {
     }
   };
 
+  const [live, setLive] = useState(false);
+
   useEffect(() => {
     if (tab === "records") loadEntity(entity);
+  }, [tab, entity]);
+
+  // Real-time: reload records when the selected entity changes.
+  useEffect(() => {
+    if (tab !== "records") return;
+    let unsub;
+    try { unsub = base44.entities[entity]?.subscribe?.(() => { setLive(true); loadEntity(entity); }); } catch { /* */ }
+    return () => { try { unsub?.(); } catch {} };
   }, [tab, entity]);
 
   const types = generatorTypes.generator_types || [];
@@ -79,7 +89,14 @@ export default function Visualizer() {
       <div className="flex items-center gap-3 mb-1">
         <div className="xa-icon-chip"><Eye className="w-5 h-5" /></div>
         <div>
-          <h1 className="text-xl font-black font-heading">Visualizer</h1>
+          <h1 className="text-xl font-black font-heading flex items-center gap-2">Visualizer
+            {tab === "records" && (
+              <span className="flex items-center gap-1">
+                <span className={`w-2 h-2 rounded-full ${live ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+                <span className="text-[9px] font-bold uppercase tracking-wide text-muted-foreground">{live ? "Live" : "Snapshot"}</span>
+              </span>
+            )}
+          </h1>
           <p className="text-sm text-muted-foreground">Live rendered previews of every generator type and registry record — real-world output for each.</p>
         </div>
       </div>

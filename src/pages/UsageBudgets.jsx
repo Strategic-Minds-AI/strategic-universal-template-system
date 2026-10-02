@@ -7,24 +7,38 @@ import { counts } from "@/lib/factory/generator/registry";
 export default function UsageBudgets() {
   const [metrics, setMetrics] = useState({});
   const [loading, setLoading] = useState(true);
+  const [live, setLive] = useState(false);
 
+  const loadMetrics = async () => {
+    try {
+      const entries = await Promise.all([
+        base44.entities.GeneratorDefinition.count({}).then((n) => ["Generators", n]),
+        base44.entities.GeneratorRun.count({}).then((n) => ["Runs", n]),
+        base44.entities.Artifact.count({}).then((n) => ["Artifacts", n]),
+        base44.entities.RunValidation.count({}).then((n) => ["Validations", n]),
+        base44.entities.RepairTask.count({}).then((n) => ["Repairs", n]),
+        base44.entities.Approval.count({ status: "pending" }).then((n) => ["Pending approvals", n]),
+        base44.entities.ProvisioningPlan.count({}).then((n) => ["Provisioning plans", n]),
+        base44.entities.AuditEvent.count({}).then((n) => ["Audit events", n]),
+      ]);
+      setMetrics(Object.fromEntries(entries));
+    } catch (e) { /* empty */ }
+    setLoading(false);
+  };
+
+  useEffect(() => { loadMetrics(); }, []);
+
+  // Real-time: refresh counts when any tracked entity changes.
   useEffect(() => {
-    (async () => {
+    const unsubs = [];
+    const entities = ["GeneratorRun", "Artifact", "RunValidation", "RepairTask", "Approval", "ProvisioningPlan", "AuditEvent"];
+    for (const e of entities) {
       try {
-        const entries = await Promise.all([
-          base44.entities.GeneratorDefinition.count({}).then((n) => ["Generators", n]),
-          base44.entities.GeneratorRun.count({}).then((n) => ["Runs", n]),
-          base44.entities.Artifact.count({}).then((n) => ["Artifacts", n]),
-          base44.entities.RunValidation.count({}).then((n) => ["Validations", n]),
-          base44.entities.RepairTask.count({}).then((n) => ["Repairs", n]),
-          base44.entities.Approval.count({ status: "pending" }).then((n) => ["Pending approvals", n]),
-          base44.entities.ProvisioningPlan.count({}).then((n) => ["Provisioning plans", n]),
-          base44.entities.AuditEvent.count({}).then((n) => ["Audit events", n]),
-        ]);
-        setMetrics(Object.fromEntries(entries));
-      } catch (e) { /* empty */ }
-      setLoading(false);
-    })();
+        const u = base44.entities[e]?.subscribe?.(() => { setLive(true); loadMetrics(); });
+        if (u) unsubs.push(u);
+      } catch { /* */ }
+    }
+    return () => unsubs.forEach((u) => { try { u(); } catch {} });
   }, []);
 
   const adapters = adapterHealthSummary();
@@ -35,7 +49,12 @@ export default function UsageBudgets() {
       <div className="flex items-center gap-3 mb-5">
         <div className="xa-icon-chip"><Gauge className="w-5 h-5" /></div>
         <div>
-          <h1 className="text-xl font-black font-heading">Usage / Budgets</h1>
+          <h1 className="text-xl font-black font-heading flex items-center gap-2">Usage / Budgets
+            <span className="flex items-center gap-1">
+              <span className={`w-2 h-2 rounded-full ${live ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+              <span className="text-[9px] font-bold uppercase tracking-wide text-muted-foreground">{live ? "Live" : "Snapshot"}</span>
+            </span>
+          </h1>
           <p className="text-sm text-muted-foreground mt-0.5">Live record counts and adapter health across the factory runtime.</p>
         </div>
       </div>

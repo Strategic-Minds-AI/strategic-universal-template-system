@@ -19,6 +19,7 @@ export default function AuditReceipts() {
       ]}
       emptyTitle="No audit events"
       emptyHint="Every create, update, approval, and protected action is recorded here."
+      subscribeEntity="AuditEvent"
     />
   );
 }

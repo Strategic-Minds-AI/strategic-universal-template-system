@@ -13,21 +13,35 @@ const STATIC_FAMILIES = [
 export default function CapabilityRegistry() {
   const [counts, setCounts] = useState({});
   const [loading, setLoading] = useState(true);
+  const [live, setLive] = useState(false);
 
+  const loadCounts = async () => {
+    const entries = [];
+    for (const f of STATIC_FAMILIES) {
+      try { entries.push([f.entity, await base44.entities[f.entity].count({})]); }
+      catch { entries.push([f.entity, null]); }
+    }
+    for (const entity of Object.keys(PROFILE_FAMILIES)) {
+      try { entries.push([entity, await base44.entities[entity].count({})]); }
+      catch { entries.push([entity, null]); }
+    }
+    setCounts(Object.fromEntries(entries));
+    setLoading(false);
+  };
+
+  useEffect(() => { loadCounts(); }, []);
+
+  // Real-time: refresh when any tracked entity changes.
   useEffect(() => {
-    (async () => {
-      const entries = [];
-      for (const f of STATIC_FAMILIES) {
-        try { entries.push([f.entity, await base44.entities[f.entity].count({})]); }
-        catch { entries.push([f.entity, null]); }
-      }
-      for (const entity of Object.keys(PROFILE_FAMILIES)) {
-        try { entries.push([entity, await base44.entities[entity].count({})]); }
-        catch { entries.push([entity, null]); }
-      }
-      setCounts(Object.fromEntries(entries));
-      setLoading(false);
-    })();
+    const unsubs = [];
+    const entities = [...STATIC_FAMILIES.map((f) => f.entity), ...Object.keys(PROFILE_FAMILIES)];
+    for (const e of entities) {
+      try {
+        const u = base44.entities[e]?.subscribe?.(() => { setLive(true); loadCounts(); });
+        if (u) unsubs.push(u);
+      } catch { /* */ }
+    }
+    return () => unsubs.forEach((u) => { try { u(); } catch {} });
   }, []);
 
   const all = [
@@ -42,7 +56,12 @@ export default function CapabilityRegistry() {
       <div className="flex items-center gap-3 mb-5">
         <div className="xa-icon-chip"><Layers className="w-5 h-5" /></div>
         <div>
-          <h1 className="text-xl font-black font-heading">Universal Capability Registry</h1>
+          <h1 className="text-xl font-black font-heading flex items-center gap-2">Universal Capability Registry
+            <span className="flex items-center gap-1">
+              <span className={`w-2 h-2 rounded-full ${live ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+              <span className="text-[9px] font-bold uppercase tracking-wide text-muted-foreground">{live ? "Live" : "Snapshot"}</span>
+            </span>
+          </h1>
           <p className="text-sm text-muted-foreground mt-0.5">Every definition family — versioned, first-class, composable. {all.length} families.</p>
         </div>
       </div>

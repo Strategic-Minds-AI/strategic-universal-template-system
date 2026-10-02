@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, RefreshCw, Inbox } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
 export function StatusPill({ status }) {
   const map = {
@@ -36,12 +37,14 @@ export function StatusPill({ status }) {
   return <span className={`text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${cls}`}>{String(status || "—").replace(/_/g, " ")}</span>;
 }
 
-export default function EntityListPage({ title, subtitle, icon: Icon, badge, load, columns, getRowId, rowTo, onRowClick, emptyTitle, emptyHint, actions, footer }) {
+export default function EntityListPage({ title, subtitle, icon: Icon, badge, load, columns, getRowId, rowTo, onRowClick, emptyTitle, emptyHint, actions, footer, subscribeEntity }) {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
+  const [live, setLive] = useState(false);
+  const reloadRef = useRef(null);
 
   const reload = async () => {
     setLoading(true); setError(null);
@@ -52,8 +55,22 @@ export default function EntityListPage({ title, subtitle, icon: Icon, badge, loa
       setError(e?.message || "Load failed");
     } finally { setLoading(false); }
   };
+  reloadRef.current = reload;
 
   useEffect(() => { reload(); /* mount only */ }, []);
+
+  // Real-time subscription — ceiling: live updates, not polling.
+  useEffect(() => {
+    if (!subscribeEntity) return;
+    let unsub;
+    try {
+      unsub = base44.entities[subscribeEntity]?.subscribe?.(() => {
+        setLive(true);
+        reloadRef.current?.();
+      });
+    } catch { /* best-effort */ }
+    return () => { try { unsub?.(); } catch {} };
+  }, [subscribeEntity]);
 
   const filtered = query
     ? items.filter((r) => columns.some((c) => {
@@ -80,6 +97,12 @@ export default function EntityListPage({ title, subtitle, icon: Icon, badge, loa
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Filter..." className="pl-8 pr-3 py-2 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring w-44" />
           </div>
+          {subscribeEntity && (
+            <div className="flex items-center gap-1 mr-1">
+              <span className={`w-2 h-2 rounded-full ${live ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+              <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{live ? "Live" : "Snap"}</span>
+            </div>
+          )}
           <button onClick={reload} className="p-2 rounded-lg border border-input hover:bg-muted transition-colors" title="Reload"><RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} /></button>
         </div>
       </div>

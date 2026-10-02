@@ -93,6 +93,14 @@ export default function UniversalProvisioning() {
 
   useEffect(() => { loadExisting(); loadPlans(); }, []);
 
+  // Real-time: reload when adapters or plans change.
+  useEffect(() => {
+    const unsubs = [];
+    try { const u1 = base44.entities.AdapterDefinition?.subscribe?.(() => { loadExisting(); }); if (u1) unsubs.push(u1); } catch { /* */ }
+    try { const u2 = base44.entities.ProvisioningPlan?.subscribe?.(() => { loadPlans(); }); if (u2) unsubs.push(u2); } catch { /* */ }
+    return () => unsubs.forEach((u) => { try { u(); } catch {} });
+  }, []);
+
   const onSaved = (key, payload) => {
     setExisting((m) => ({ ...m, [key]: { ...(m[key] || {}), ...payload, id: m[key]?.id } }));
   };

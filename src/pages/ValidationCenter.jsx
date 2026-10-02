@@ -21,6 +21,7 @@ export default function ValidationCenter() {
       ]}
       emptyTitle="No validation receipts yet"
       emptyHint="Receipts are written when a generator run is validated."
+      subscribeEntity="RunValidation"
     />
   );
 }

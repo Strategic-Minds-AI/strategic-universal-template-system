@@ -20,6 +20,7 @@ export default function ArtifactExplorer() {
       ]}
       emptyTitle="No artifacts yet"
       emptyHint="Artifacts are produced when generators run."
+      subscribeEntity="Artifact"
     />
   );
 }
