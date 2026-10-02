@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Sparkles, Eye, CheckCircle2, Download, Undo2, Redo2, ChevronDown } from "lucide-react";
 import BrandLogo from "./BrandLogo.jsx";
 
@@ -15,7 +16,9 @@ export default function TopBar({ project, viewport, setViewport, theme, setTheme
   return (
     <header className="h-14 shrink-0 border-b border-border bg-background flex items-center justify-between px-4 gap-3">
       <div className="flex items-center gap-3 min-w-0">
-        <BrandLogo size={28} />
+        <Link to="/" title="Back to dashboard" className="flex items-center hover:opacity-80 transition-opacity">
+          <BrandLogo size={28} />
+        </Link>
         <div className="hidden md:flex items-center gap-1.5 pl-3 border-l border-border">
           <span className="text-xs font-medium text-muted-foreground">Project</span>
           <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-[#CCBB00] transition-colors">
