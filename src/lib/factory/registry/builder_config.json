@@ -71,6 +71,7 @@
     "placeholder_format": "[TOKEN_NAME]"
   },
   "release_gate": "No production deploy, domain/DNS, payments, secrets, live messaging, or destructive action without explicit operator approval.",
+  "default_deploy_stack": { "backend": "supabase", "frontend": "vercel", "worker": "railway", "code": "github", "google": "google_workspace" },
   "quality_profile_default": "ceiling",
   "selection_order": [
     "platform",
