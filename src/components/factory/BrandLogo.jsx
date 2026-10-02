@@ -14,7 +14,7 @@ export default function BrandLogo({ size = 32, withWordmark = true }) {
             Strategic Minds <span className="text-[#CCBB00]">AI</span>
           </div>
           <div className="text-[10px] font-medium text-muted-foreground tracking-wide uppercase">
-            Strategy · Intelligence · Automation · Growth
+            Strategy First · Intelligence Applied
           </div>
         </div>
       )}
