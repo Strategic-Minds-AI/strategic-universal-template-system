@@ -1,47 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
-import { Boxes, Terminal, Package, ShieldCheck, CheckSquare, Server, Brain, Activity, Zap, AlertTriangle } from "lucide-react";
-import { generatorTypes, counts } from "@/lib/factory/generator/registry";
+import { Boxes, Terminal, Package, ShieldCheck, CheckSquare, Server, Activity, Zap, AlertTriangle, Wrench } from "lucide-react";
+import { counts } from "@/lib/factory/generator/registry";
 import { adapterHealthSummary } from "@/lib/factory/generator/adapters";
+import { useDashboardData } from "@/components/dashboard/useDashboardData";
+import MetricCard from "@/components/dashboard/MetricCard";
+import LiveActivityStream from "@/components/dashboard/LiveActivityStream";
+import AIInsightsPanel from "@/components/dashboard/AIInsightsPanel";
+import SystemHealthScore from "@/components/dashboard/SystemHealthScore";
+import { ThroughputChart, ValidationTrendChart } from "@/components/dashboard/ThroughputChart";
 
 export default function Dashboard() {
-  const [metrics, setMetrics] = useState({ generators: null, runs: null, artifacts: null, validations: null, approvals: null, provisioning: null });
-  const [recentRuns, setRecentRuns] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const [gens, runs, arts, vals, apps, prov] = await Promise.all([
-          base44.entities.GeneratorDefinition.count({}),
-          base44.entities.GeneratorRun.count({}),
-          base44.entities.Artifact.count({}),
-          base44.entities.RunValidation.count({}),
-          base44.entities.Approval.count({ status: "pending" }),
-          base44.entities.ProvisioningPlan.count({}),
-        ]);
-        setMetrics({ generators: gens, runs: runs, artifacts: arts, validations: vals, approvals: apps, provisioning: prov });
-        const runPage = await base44.entities.GeneratorRun.filter({}, { sort: "-created_date", limit: 8 });
-        setRecentRuns(runPage.items || []);
-      } catch (e) {
-        // metrics load best-effort
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  const {
+    metrics, recentRuns, activityFeed, throughput, validationTrend,
+    insights, insightsLoading, loadInsights, loading, live,
+  } = useDashboardData();
 
   const adapters = adapterHealthSummary();
-  const configuredAdapters = adapters.filter((a) => a.configured).length;
+
+  // Build sparkline data from throughput (daily totals) for each metric card.
+  const runSparkline = throughput.map((t) => t.total);
+  const artifactSparkline = throughput.map((t) => t.passed + t.other);
+  const validationSparkline = validationTrend.map((v) => v.pass + v.fail + v.blocked);
 
   const cards = [
     { label: "Generators", value: metrics.generators, icon: Boxes, to: "/generators", hint: `${counts.generator_types} types available` },
-    { label: "Runs", value: metrics.runs, icon: Terminal, to: "/runs" },
-    { label: "Artifacts", value: metrics.artifacts, icon: Package, to: "/artifacts" },
-    { label: "Validations", value: metrics.validations, icon: ShieldCheck, to: "/validation" },
+    { label: "Runs", value: metrics.runs, icon: Terminal, to: "/runs", sparkline: runSparkline },
+    { label: "Artifacts", value: metrics.artifacts, icon: Package, to: "/artifacts", sparkline: artifactSparkline },
+    { label: "Validations", value: metrics.validations, icon: ShieldCheck, to: "/validation", sparkline: validationSparkline },
     { label: "Pending Approvals", value: metrics.approvals, icon: CheckSquare, to: "/approvals" },
     { label: "Provisioning Plans", value: metrics.provisioning, icon: Server, to: "/provisioning" },
+    { label: "Open Repairs", value: metrics.repairTasks, icon: Wrench, to: "/repair" },
+    { label: "Audit Events", value: metrics.auditEvents, icon: Activity, to: "/audit" },
   ];
 
   const statusColor = (s) => ({
@@ -58,24 +48,32 @@ export default function Dashboard() {
           <h1 className="text-2xl font-black font-heading text-foreground">Universal Factory OS</h1>
           <p className="text-sm text-muted-foreground mt-1">Generator-of-generators platform · registry v1.0.0 · {counts.generator_types + counts.ai_consulting_templates + counts.provisioning_templates} definitions available</p>
         </div>
-        <div className="xa-pill-badge">Production Runtime</div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <span className={`w-2 h-2 rounded-full ${live ? "bg-green-500 animate-pulse" : "bg-gray-300"}`} />
+            <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{live ? "Live" : "Snapshot"}</span>
+          </div>
+          <div className="xa-pill-badge">Production Runtime</div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-        {cards.map((c) => {
-          const Icon = c.icon;
-          return (
-            <Link key={c.label} to={c.to} className="xa-card p-4 hover:shadow-md transition-shadow">
-              <Icon className="w-5 h-5 text-[#0d2f96] mb-2" />
-              <div className="text-2xl font-black font-heading">{loading ? "—" : (c.value ?? 0)}</div>
-              <div className="text-xs text-muted-foreground font-medium">{c.label}</div>
-              {c.hint && <div className="text-[10px] text-muted-foreground mt-0.5">{c.hint}</div>}
-            </Link>
-          );
-        })}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+        {cards.map((c) => (
+          <MetricCard key={c.label} {...c} loading={loading} />
+        ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid lg:grid-cols-3 gap-4 mb-4">
+        <LiveActivityStream feed={activityFeed} live={live} />
+        <SystemHealthScore adapters={adapters} throughput={throughput} validationTrend={validationTrend} />
+      </div>
+
+      <div className="grid lg:grid-cols-2 gap-4 mb-4">
+        <ThroughputChart data={throughput} />
+        <ValidationTrendChart data={validationTrend} />
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4 mb-4">
         <div className="xa-card p-5 lg:col-span-2">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 text-[#0d2f96]" />
@@ -100,24 +98,23 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="xa-card p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-4 h-4 text-[#0d2f96]" />
-            <h2 className="text-sm font-bold uppercase tracking-wide">Adapter Health</h2>
-          </div>
-          <div className="space-y-2">
-            {adapters.slice(0, 8).map((a) => (
-              <div key={a.adapter_key} className="flex items-center justify-between text-xs">
-                <span className="font-medium truncate">{a.name}</span>
-                <span className={`font-bold px-1.5 py-0.5 rounded ${a.health_state === "healthy" ? "text-green-600 bg-green-50" : a.health_state === "disabled" ? "text-gray-400 bg-gray-50" : "text-amber-600 bg-amber-50"}`}>
-                  {a.health_state === "not_configured" ? "NOT_CONFIGURED" : a.health_state.toUpperCase()}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground">
-            {configuredAdapters}/{adapters.length} adapters configured
-          </div>
+        <AIInsightsPanel insights={insights} loading={insightsLoading} onRefresh={loadInsights} />
+      </div>
+
+      <div className="xa-card p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Zap className="w-4 h-4 text-[#0d2f96]" />
+          <h2 className="text-sm font-bold uppercase tracking-wide">Adapter Health</h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {adapters.map((a) => (
+            <Link key={a.adapter_key} to="/adapters" className="flex items-center justify-between text-xs p-2 rounded-lg hover:bg-muted transition-colors">
+              <span className="font-medium truncate">{a.name}</span>
+              <span className={`font-bold px-1.5 py-0.5 rounded whitespace-nowrap ${a.health_state === "healthy" ? "text-green-600 bg-green-50" : a.health_state === "disabled" ? "text-gray-400 bg-gray-50" : "text-amber-600 bg-amber-50"}`}>
+                {a.health_state === "not_configured" ? "NOT_CFG" : a.health_state.toUpperCase()}
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
 
@@ -127,7 +124,7 @@ export default function Dashboard() {
           <div className="text-sm">
             <div className="font-bold">AI provider: Vercel AI Gateway</div>
             <div className="text-muted-foreground mt-1">
-              Agent conversations, AI generator steps, evaluations, logos, and palettes route through your server-side Vercel AI Gateway. No platform-AI fallback.
+              Agent conversations, AI generator steps, evaluations, logos, palettes, and dashboard insights route through your server-side Vercel AI Gateway. No platform-AI fallback.
               Sandbox execution and external provisioning still require their own configured adapters.
             </div>
           </div>
