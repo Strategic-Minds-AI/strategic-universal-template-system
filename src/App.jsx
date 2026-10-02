@@ -40,6 +40,7 @@ import LeadScraper from '@/pages/LeadScraper';
 import DigitalDominance from '@/pages/DigitalDominance';
 import UniversalProvisioning from '@/pages/UniversalProvisioning';
 import VisualGallery from '@/pages/VisualGallery';
+import Visualizer from '@/pages/Visualizer';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -99,6 +100,7 @@ const AuthenticatedApp = () => {
           <Route path="/digital-dominance" element={<DigitalDominance />} />
           <Route path="/provisioning-system" element={<UniversalProvisioning />} />
           <Route path="/gallery" element={<VisualGallery />} />
+          <Route path="/visualizer" element={<Visualizer />} />
         </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />

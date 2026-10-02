@@ -13,6 +13,7 @@ export const DEFAULT_CONFIG = {
   fontColor: "",
   fontFamily: "Roboto",
   fontScale: 1,
+  logoImage: "",
 };
 
 export const PRESETS = [

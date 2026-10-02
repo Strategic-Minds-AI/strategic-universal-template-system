@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { X, SlidersHorizontal, FileText } from "lucide-react";
 import TemplatePreview from "./TemplatePreview.jsx";
 import StudioControls from "./StudioControls.jsx";
+import StudioGenerators from "./StudioGenerators.jsx";
 import { familyFor } from "@/lib/gallery/previewRenderer.js";
 
 function Meta({ label, value }) {
@@ -57,7 +58,10 @@ export default function TemplateDetailModal({ template, config, themeVars, onCha
           </div>
           <div className="flex-1 overflow-y-auto xa-scroll p-4">
             {tab === "customize" ? (
-              <StudioControls config={config} onChange={onChange} />
+              <div className="flex flex-col gap-4">
+                <StudioControls config={config} onChange={onChange} />
+                <StudioGenerators config={config} onChange={onChange} />
+              </div>
             ) : (
               <div className="flex flex-col gap-4">
                 <div className="text-xs text-muted-foreground font-mono">{template.id}</div>

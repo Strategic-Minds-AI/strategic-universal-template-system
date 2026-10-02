@@ -1,6 +1,7 @@
 // Maps each factory template to a live HTML screen rendered from the brand
 // mini-UI kit. All visible copy is driven by the studio config (ctx) so the
-// Template Studio can rebrand/recontent every preview live.
+// Template Studio can rebrand/recontent every preview live. All font-sizes
+// scale with --vg-font-scale.
 import desktopPatterns from "@/lib/factory/registry/patterns/desktop_patterns.json";
 import mobilePatterns from "@/lib/factory/registry/patterns/mobile_patterns.json";
 import experienceRecipes from "@/lib/factory/registry/patterns/experience_recipes.json";
@@ -14,10 +15,12 @@ export const GALLERY_FAMILIES = [
 
 const PHONE = { w: 300, h: 600 };
 const BROWSER = { w: 760, h: 460 };
+const FS = (n) => `font-size:calc(${n}px * var(--vg-font-scale,1))`;
 
 const ctxd = (config) => ({ ...DEFAULT_CONFIG, ...config });
 
 const logo = (ctx) => {
+  if (ctx.logoImage) return `<span class="logo"><img src="${ctx.logoImage}" alt="" style="height:16px;width:auto;border-radius:4px;vertical-align:middle" /></span>`;
   const parts = String(ctx.logoText || "Strategic Minds").trim().split(/\s+/);
   if (parts.length < 2) return `<span class="logo">${parts[0] || ""}</span>`;
   const last = parts.pop();
@@ -25,17 +28,13 @@ const logo = (ctx) => {
 };
 
 const nav = (ctx, active, tabs = ["Dashboard", "Projects", "Reports"]) =>
-  `<div class="vg-nav">${logo(ctx)}${tabs
-    .map((t) => `<span class="vg-tab ${t === active ? "on" : ""}">${t}</span>`)
-    .join("")}<div style="flex:1"></div><span class="vg-avatar"></span></div>`;
+  `<div class="vg-nav">${logo(ctx)}${tabs.map((t) => `<span class="vg-tab ${t === active ? "on" : ""}">${t}</span>`).join("")}<div style="flex:1"></div><span class="vg-avatar"></span></div>`;
 
 const phoneNav = (ctx) =>
   `<div class="vg-nav" style="justify-content:space-between">${logo(ctx)}<span class="vg-avatar"></span></div>`;
 
 const tabbar = (tabs, active = 0) =>
-  `<div class="vg-tabbar">${tabs
-    .map((t, i) => `<div class="t ${i === active ? "on" : ""}"><div class="d"></div><span>${t}</span></div>`)
-    .join("")}</div>`;
+  `<div class="vg-tabbar">${tabs.map((t, i) => `<div class="t ${i === active ? "on" : ""}"><div class="d"></div><span>${t}</span></div>`).join("")}</div>`;
 
 const feedItem = (ttl, meta, w = 80) =>
   `<div class="item"><div class="thumb"></div><div class="body"><div class="ttl">${ttl}</div><div class="meta">${meta}</div><div class="ln" style="width:${w}%"></div></div></div>`;
@@ -47,13 +46,13 @@ function sidebarWorkspace(ctx) {
     `<div style="flex:1;display:flex;min-height:0">
       <div class="vg-side"><div class="i on">▦</div><div class="i">▤</div><div class="i">◍</div><div class="i">◷</div><div class="i">⚙</div></div>
       <div class="vg-scroll" style="flex:1;padding:12px;overflow:auto">
-        <div class="vg-row vg-between" style="margin-bottom:10px"><div class="vg-col"><div style="font-size:14px;font-weight:900">${ctx.heading}</div><div class="vg-muted" style="font-size:9px">${ctx.subtitle}</div></div><button class="vg-btn pri">+ New</button></div>
+        <div class="vg-row vg-between" style="margin-bottom:10px"><div class="vg-col"><div style="${FS(14)};font-weight:900">${ctx.heading}</div><div class="vg-muted" style="${FS(9)}">${ctx.subtitle}</div></div><button class="vg-btn pri">+ New</button></div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
           <div class="vg-kpi"><div class="v">1,284</div><div class="l">Active</div></div>
           <div class="vg-kpi"><div class="v">$48.2k</div><div class="l">Revenue</div></div>
           <div class="vg-kpi"><div class="v">96%</div><div class="l">Uptime</div></div>
         </div>
-        <div class="vg-card"><div style="font-size:10px;font-weight:700;margin-bottom:6px">Recent activity</div><div class="vg-feed">${feedItem(ctx.brandName + " updated", "2h ago · Sarah")}${feedItem("New lead captured", "5h ago · Auto", 60)}</div></div>
+        <div class="vg-card"><div style="${FS(10)};font-weight:700;margin-bottom:6px">Recent activity</div><div class="vg-feed">${feedItem(ctx.brandName + " updated", "2h ago · Sarah")}${feedItem("New lead captured", "5h ago · Auto", 60)}</div></div>
       </div>
     </div>`
   );
@@ -69,9 +68,9 @@ function topnavWorkspace(ctx) {
   return (
     nav(ctx, "Overview", ["Overview", "Objects", "Reports", "Settings"]) +
     `<div class="vg-scroll" style="flex:1;padding:12px;overflow:auto">
-      <div class="vg-row vg-between" style="margin-bottom:10px"><div class="vg-col"><div style="font-size:14px;font-weight:900">${ctx.heading}</div><div class="vg-muted" style="font-size:9px">${ctx.subtitle}</div></div><button class="vg-btn pri">+ Create</button></div>
+      <div class="vg-row vg-between" style="margin-bottom:10px"><div class="vg-col"><div style="${FS(14)};font-weight:900">${ctx.heading}</div><div class="vg-muted" style="${FS(9)}">${ctx.subtitle}</div></div><button class="vg-btn pri">+ Create</button></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        ${cards.map((c) => `<div class="vg-card"><div style="font-size:10px;font-weight:700">${c[0]}</div><div class="vg-muted" style="font-size:9px;margin-top:3px">${c[1]}</div><div class="vg-bar" style="margin-top:9px"><i style="width:${c[2]}%"></i></div></div>`).join("")}
+        ${cards.map((c) => `<div class="vg-card"><div style="${FS(10)};font-weight:700">${c[0]}</div><div class="vg-muted" style="${FS(9)};margin-top:3px">${c[1]}</div><div class="vg-bar" style="margin-top:9px"><i style="width:${c[2]}%"></i></div></div>`).join("")}
       </div>
     </div>`
   );
@@ -86,10 +85,7 @@ function dataTable(ctx) {
     ["Harbor Group", "Daniel R.", "Pending", "$5,600"],
     ["Lumen Studio", "Maya P.", "Active", "$9,300"],
   ];
-  const pill = (s) => {
-    const cls = s === "Won" || s === "Active" ? "" : "soft";
-    return `<span class="pill ${cls}">${s}</span>`;
-  };
+  const pill = (s) => `<span class="pill ${s === "Won" || s === "Active" ? "" : "soft"}">${s}</span>`;
   return (
     nav(ctx, "Records", ["Records", "People", "Settings"]) +
     `<div style="flex:1;display:flex;flex-direction:column;min-height:0">
@@ -115,7 +111,7 @@ function analytics(ctx) {
         <div class="vg-kpi"><div class="v">3.9%</div><div class="l">Convert</div></div>
         <div class="vg-kpi"><div class="v">62</div><div class="l">Leads</div></div>
       </div>
-      <div class="vg-card"><div style="font-size:10px;font-weight:700;margin-bottom:8px">${ctx.heading}</div><div class="vg-chart">${bars}</div></div>
+      <div class="vg-card"><div style="${FS(10)};font-weight:700;margin-bottom:8px">${ctx.heading}</div><div class="vg-chart">${bars}</div></div>
     </div>`
   );
 }
@@ -129,9 +125,7 @@ function kanban(ctx) {
   ];
   return (
     nav(ctx, "Board", ["Board", "List", "Reports"]) +
-    `<div style="flex:1;min-height:0"><div class="vg-kanban">${cols
-      .map((c) => `<div class="col"><div class="head"><span>${c[0]}</span><span>${c[1]}</span></div>${c[2].map((t) => `<div class="card"><div class="t">${t}</div><div class="m">Due Fri</div><span class="tag">P1</span></div>`).join("")}</div>`)
-      .join("")}</div></div>`
+    `<div style="flex:1;min-height:0"><div class="vg-kanban">${cols.map((c) => `<div class="col"><div class="head"><span>${c[0]}</span><span>${c[1]}</span></div>${c[2].map((t) => `<div class="card"><div class="t">${t}</div><div class="m">Due Fri</div><span class="tag">P1</span></div>`).join("")}</div>`).join("")}</div></div>`
   );
 }
 
@@ -162,7 +156,7 @@ function swipe(ctx) {
       <div class="progress"><i></i></div>
       <div style="flex:1"></div>
       <div class="overlay">
-        <div class="vg-col" style="gap:4px"><div style="font-weight:900;font-size:13px">@${(ctx.logoText || "").toLowerCase().replace(/\s+/g, "")}</div><div style="font-size:9px;opacity:.85;max-width:180px">${ctx.subtitle}</div></div>
+        <div class="vg-col" style="gap:4px"><div style="font-weight:900;${FS(13)}">@${(ctx.logoText || "").toLowerCase().replace(/\s+/g, "")}</div><div style="${FS(9)};opacity:.85;max-width:180px">${ctx.subtitle}</div></div>
         <div class="actions"><div class="a">♥</div><div class="a">💬</div><div class="a">↗</div></div>
       </div>
     </div>` + tabbar(["For You", "Following", "Live"], 0)
@@ -173,14 +167,14 @@ function tiles(ctx) {
   return (
     phoneNav(ctx) +
     `<div class="vg-scroll" style="flex:1;overflow:auto">
-      <div style="padding:12px 12px 10px"><div style="font-size:15px;font-weight:900">${ctx.heading}</div><div class="vg-muted" style="font-size:9px">${ctx.subtitle}</div></div>
+      <div style="padding:12px 12px 10px"><div style="font-weight:900;${FS(15)}">${ctx.heading}</div><div class="vg-muted" style="${FS(9)}">${ctx.subtitle}</div></div>
       <div class="vg-tiles">
         <div class="tile"><div class="ic">$</div><div class="v">$48.2k</div><div class="l">Revenue</div></div>
         <div class="tile"><div class="ic">↑</div><div class="v">62</div><div class="l">Leads</div></div>
         <div class="tile"><div class="ic">◷</div><div class="v">12</div><div class="l">Tasks</div></div>
         <div class="tile"><div class="ic">★</div><div class="v">4.9</div><div class="l">Rating</div></div>
       </div>
-      <div style="padding:0 12px 10px"><div class="vg-card"><div style="font-size:10px;font-weight:700;margin-bottom:6px">Recent</div><div class="vg-feed">${feedItem(ctx.brandName + " booked", "Today", 70)}</div></div></div>
+      <div style="padding:0 12px 10px"><div class="vg-card"><div style="${FS(10)};font-weight:700;margin-bottom:6px">Recent</div><div class="vg-feed">${feedItem(ctx.brandName + " booked", "Today", 70)}</div></div></div>
     </div>` +
     tabbar(["Home", "Activity", "Inbox", "Me"], 0)
   );
@@ -189,7 +183,7 @@ function tiles(ctx) {
 function search(ctx) {
   return (
     `<div class="vg-search">
-      <div class="f"><span style="font-size:11px">🔍</span><span style="font-size:10px;color:var(--brand-muted-foreground)">Search places…</span><div style="flex:1"></div><span class="vg-chip">Nearby</span></div>
+      <div class="f"><span style="${FS(11)}">🔍</span><span style="${FS(10)};color:var(--brand-muted-foreground)">Search places…</span><div style="flex:1"></div><span class="vg-chip">Nearby</span></div>
       <div class="vg-row vg-gap2" style="margin-top:8px"><span class="vg-chip">Cafés</span><span class="vg-chip soft">Shops</span><span class="vg-chip soft">Services</span></div>
     </div>
     <div class="vg-scroll" style="flex:1;overflow:auto">
@@ -207,7 +201,7 @@ function genericMobile(ctx) {
   return (
     phoneNav(ctx) +
     `<div class="vg-scroll" style="flex:1;overflow:auto">
-      <div style="padding:12px"><div style="font-size:14px;font-weight:900">Inbox</div><div class="vg-muted" style="font-size:9px;margin-bottom:8px">3 new messages</div></div>
+      <div style="padding:12px"><div style="font-weight:900;${FS(14)}">Inbox</div><div class="vg-muted" style="${FS(9)};margin-bottom:8px">3 new messages</div></div>
       <div class="vg-feed">${feedItem("Sarah K. — " + ctx.brandName, "2h ago", 85)}${feedItem("Daniel R. — Quote ready", "5h ago", 60)}${feedItem("System — Weekly digest", "1d ago", 70)}</div>
     </div>` +
     tabbar(["Home", "Inbox", "Me"], 0)
@@ -239,11 +233,11 @@ function renderRecipe(r, config) {
     html:
       `<div class="vg-screen">${nav(ctx, "Flow", ["Flow", "Steps"])}` +
       `<div class="vg-scroll" style="flex:1;padding:14px;overflow:auto">
-        <div style="font-size:15px;font-weight:900">${r.name}</div>
-        <div class="vg-muted" style="font-size:10px;margin-top:2px">${r.domain || ""}</div>
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--brand-muted-foreground);margin:16px 0 8px">Canonical flow</div>
+        <div style="font-weight:900;${FS(15)}">${r.name}</div>
+        <div class="vg-muted" style="${FS(10)};margin-top:2px">${r.domain || ""}</div>
+        <div style="${FS(9)};font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--brand-muted-foreground);margin:16px 0 8px">Canonical flow</div>
         <div class="vg-flow">${flow}</div>
-        <div class="vg-card" style="margin-top:14px"><div style="font-size:10px;font-weight:700;margin-bottom:7px">Composition contract</div><div class="vg-row vg-gap2" style="flex-wrap:wrap">${chips}</div></div>
+        <div class="vg-card" style="margin-top:14px"><div style="${FS(10)};font-weight:700;margin-bottom:7px">Composition contract</div><div class="vg-row vg-gap2" style="flex-wrap:wrap">${chips}</div></div>
       </div></div>`,
   };
 }
