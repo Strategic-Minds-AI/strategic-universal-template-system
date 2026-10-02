@@ -242,7 +242,7 @@ export default function UniversalProvisioning() {
           <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
           <div className="text-[11px]">
             <span className="font-bold">Live execution: NOT_CONFIGURED</span>
-            <span className="text-muted-foreground block mt-0.5">Secret values (SUPABASE_ACCESS_TOKEN, VERCEL_TOKEN, GITHUB_TOKEN, RAILWAY_TOKEN, GOOGLE_TOKEN) must be added in the dashboard Secrets page, and integration credits are exhausted until 2026-10-12. Dry-run plans generate fully; live provisioning re-enables when both are resolved.</span>
+            <span className="text-muted-foreground block mt-0.5">Paste each provider's API token into its box above (stored in the app DB, admin-only). Live provisioning also needs integration credits, which are exhausted until 2026-10-12 — a workspace billing limit, not a code issue. Dry-run plans generate fully now.</span>
           </div>
         </div>
       </div>

@@ -1,32 +1,35 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Check, Save, Loader2, ExternalLink, KeyRound, AlertTriangle } from "lucide-react";
+import { Check, Save, Loader2, KeyRound, AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { StatusPill } from "@/components/factory/EntityListPage.jsx";
 
 // A single provider credential card — the "box" for the API.
 // Non-secret config (refs, team IDs, owners) is saved to the AdapterDefinition entity.
-// Secret VALUES are declared via set_secrets and entered in the dashboard Secrets page.
+// Secret token VALUES are entered in the boxes below and stored in config_status.secrets
+// (admin-only read RLS on AdapterDefinition protects them).
 export default function ProviderCredentialCard({ provider, existing, onSaved }) {
   const [config, setConfig] = useState(() => {
     const init = {};
     provider.config_fields.forEach((f) => { init[f.key] = existing?.config_status?.[f.key] ?? ""; });
     return init;
   });
-  const [secretSet, setSecretSet] = useState(() => {
-    const m = existing?.config_status?.secrets_provided || {};
+  const [secretValues, setSecretValues] = useState(() => {
+    const m = existing?.config_status?.secrets || {};
     const o = {};
-    provider.secret_references.forEach((s) => { o[s] = !!m[s]; });
+    provider.secret_references.forEach((s) => { o[s] = m[s] || ""; });
     return o;
   });
+  const [showSecret, setShowSecret] = useState({});
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [err, setErr] = useState(null);
 
   const setField = (k, v) => setConfig((c) => ({ ...c, [k]: v }));
-  const toggleSecret = (s) => setSecretSet((m) => ({ ...m, [s]: !m[s] }));
+  const setSecretValue = (s, v) => setSecretValues((m) => ({ ...m, [s]: v }));
+  const toggleShow = (s) => setShowSecret((m) => ({ ...m, [s]: !m[s] }));
 
   const allConfigFilled = provider.config_fields.every((f) => f.required ? (config[f.key] || "").trim() : true);
-  const allSecretsSet = provider.secret_references.every((s) => secretSet[s]);
+  const allSecretsSet = provider.secret_references.every((s) => (secretValues[s] || "").trim().length > 0);
   const ready = allConfigFilled && allSecretsSet;
   const health = ready ? "healthy" : (existing ? existing.health_state : "not_configured");
 
@@ -41,7 +44,7 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
         enabled: ready,
         health_state: health,
         secret_references: provider.secret_references,
-        config_status: { ...config, secrets_provided: secretSet, configured_at: new Date().toISOString() },
+        config_status: { ...config, secrets: secretValues, secrets_provided: Object.fromEntries(provider.secret_references.map((s) => [s, !!(secretValues[s] || "").trim()])), configured_at: new Date().toISOString() },
       };
       if (existing?.id) {
         await base44.entities.AdapterDefinition.update(existing.id, payload);
@@ -94,21 +97,32 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
         </div>
       )}
 
-      {/* Secret references — values set in dashboard */}
+      {/* Secret token boxes — values stored in config_status.secrets (admin-only read) */}
       <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-2.5 mb-3">
         <div className="flex items-center gap-1.5 mb-1.5">
           <KeyRound className="w-3 h-3 text-amber-600" />
-          <span className="text-[10px] font-bold uppercase tracking-wide text-amber-700">Required secrets</span>
+          <span className="text-[10px] font-bold uppercase tracking-wide text-amber-700">API tokens · stored in app DB (admin-only)</span>
         </div>
-        {provider.secret_references.map((s) => (
-          <label key={s} className="flex items-center gap-2 py-1 cursor-pointer">
-            <input type="checkbox" checked={!!secretSet[s]} onChange={() => toggleSecret(s)} className="w-3.5 h-3.5 rounded border-input accent-[#CCBB00]" />
-            <span className="font-mono text-[11px] text-foreground flex-1">{s}</span>
-            <a href="#" onClick={(e) => { e.preventDefault(); window.open("/dashboard/secrets", "_blank"); }} className="text-[10px] text-[#CCBB00] font-semibold inline-flex items-center gap-0.5 hover:underline">
-              Set <ExternalLink className="w-2.5 h-2.5" />
-            </a>
-          </label>
-        ))}
+        <div className="space-y-2">
+          {provider.secret_references.map((s) => (
+            <div key={s}>
+              <label className="text-[10px] font-mono text-muted-foreground">{s}</label>
+              <div className="relative">
+                <input
+                  type={showSecret[s] ? "text" : "password"}
+                  value={secretValues[s] || ""}
+                  onChange={(e) => setSecretValue(s, e.target.value)}
+                  placeholder={`Paste ${s}…`}
+                  autoComplete="off"
+                  className="w-full mt-0.5 h-9 pl-3 pr-9 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring font-mono"
+                />
+                <button type="button" onClick={() => toggleShow(s)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  {showSecret[s] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {err && <div className="text-[11px] text-red-600 mb-2">{err}</div>}
@@ -121,7 +135,7 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
       {!ready && !saving && (
         <div className="flex items-start gap-1.5 mt-2 text-[10px] text-muted-foreground leading-snug">
           <AlertTriangle className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
-          <span>{!allConfigFilled ? "Fill required config. " : ""}{!allSecretsSet ? "Mark secrets as set after entering them in the Secrets dashboard. " : ""}Adapter stays NOT_CONFIGURED until ready.</span>
+          <span>{!allConfigFilled ? "Fill required config. " : ""}{!allSecretsSet ? "Paste each API token into its box. " : ""}Adapter stays NOT_CONFIGURED until ready.</span>
         </div>
       )}
     </div>
