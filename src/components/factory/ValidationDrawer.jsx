@@ -27,7 +27,7 @@ export default function ValidationDrawer({ validation, open, setOpen }) {
       <button onClick={() => setOpen(!open)} className="w-full h-10 flex items-center justify-between px-4 hover:bg-muted/50 transition-colors">
         <div className="flex items-center gap-2">
           {validation.result === "PASS" ? (
-            <CheckCircle2 className="w-4 h-4 text-[#CCBB00]" />
+            <CheckCircle2 className="w-4 h-4 text-[#0d2f96]" />
           ) : validation.result === "BLOCKED" ? (
             <ShieldAlert className="w-4 h-4 text-red-600" />
           ) : (
@@ -51,7 +51,7 @@ export default function ValidationDrawer({ validation, open, setOpen }) {
               {gateEntries.map(([name, g]) => (
                 <div key={name} className="flex items-start gap-1.5 text-xs">
                   {g.result === "PASS" ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#CCBB00] mt-0.5 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0d2f96] mt-0.5 shrink-0" />
                   ) : (
                     <XCircle className="w-3.5 h-3.5 text-red-600 mt-0.5 shrink-0" />
                   )}

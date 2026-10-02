@@ -21,7 +21,7 @@ export default function TopBar({ project, viewport, setViewport, theme, setTheme
         </Link>
         <div className="hidden md:flex items-center gap-1.5 pl-3 border-l border-border">
           <span className="text-xs font-medium text-muted-foreground">Project</span>
-          <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-[#CCBB00] transition-colors">
+          <button className="flex items-center gap-1 text-sm font-semibold text-foreground hover:text-[#0d2f96] transition-colors">
             <span className="truncate max-w-[160px]">{project?.name || "Untitled"}</span>
             <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
@@ -54,7 +54,7 @@ export default function TopBar({ project, viewport, setViewport, theme, setTheme
               key={t}
               onClick={() => setTheme(t)}
               className={`px-2 py-1 rounded-full text-[10px] font-semibold uppercase transition-all ${
-                theme === t ? "bg-[#FFEA00] text-black" : "text-muted-foreground hover:bg-muted"
+                theme === t ? "bg-[#0059ff] text-black" : "text-muted-foreground hover:bg-muted"
               }`}
             >
               {t.replace("hc-", "HC ")}
@@ -69,10 +69,10 @@ export default function TopBar({ project, viewport, setViewport, theme, setTheme
         </button>
         <button
           onClick={onValidate}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border border-border hover:border-[#FFEA00] hover:shadow-[0_0_14px_-3px_rgba(255,234,0,0.5)] transition-all"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border border-border hover:border-[#0059ff] hover:shadow-[0_0_14px_-3px_rgba(0,89,255,0.5)] transition-all"
         >
           {validation?.result === "PASS" ? (
-            <CheckCircle2 className="w-4 h-4 text-[#CCBB00]" />
+            <CheckCircle2 className="w-4 h-4 text-[#0d2f96]" />
           ) : (
             <Eye className="w-4 h-4" />
           )}

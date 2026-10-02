@@ -67,7 +67,7 @@ export const DEPLOY_PATTERNS = [
 // ── Execution modes (shadow vs execute) ───────────────────────────────────────
 export const EXECUTION_MODES = [
   { id: "shadow", label: "Shadow (dry-run)", color: "#4B5563", desc: "Compile + validate only. No publish, no outreach, no deploy, no spend." },
-  { id: "execute", label: "Execute (promote)", color: "#CCBB00", desc: "Promote validated SwarmTasks to production. Requires approval gate." },
+  { id: "execute", label: "Execute (promote)", color: "#0d2f96", desc: "Promote validated SwarmTasks to production. Requires approval gate." },
 ];
 
 // ── Fleet agents (universalized from source) ─────────────────────────────────
@@ -144,7 +144,7 @@ export const DIGITAL_DOMINANCE_SYSTEM = {
       { key: "brand_name", label: "Brand Name", type: "text", required: true, help: "The root brand (e.g. EpoxyQuoteNearMe)." },
       { key: "root_domain", label: "Root Domain", type: "text", required: true, help: "Canonical production domain." },
       { key: "niche", label: "Niche / Industry", type: "text", required: true, help: "e.g. epoxy garage floors, HVAC, dental." },
-      { key: "accent_color", label: "Accent Color", type: "color", required: true, default: "#FFEA00", help: "Brand accent (hex)." },
+      { key: "accent_color", label: "Accent Color", type: "color", required: true, default: "#0059ff", help: "Brand accent (hex)." },
       { key: "deploy_pattern", label: "Deploy Pattern", type: "select", required: true, default: "subdomain",
         options: ["subdomain", "path", "standalone"], help: "How generated sites are organized." },
       { key: "target_city", label: "Seed City", type: "text", required: true, help: "First city to build (e.g. Miami)." },

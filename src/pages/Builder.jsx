@@ -57,7 +57,7 @@ export default function Builder() {
     const buildSpec = {
       project_id: project.name,
       selected_patterns: selection,
-      tokens: tokens || generateTokens("#FFEA00"),
+      tokens: tokens || generateTokens("#0059ff"),
       screens: [{ route: "/", title: "Home", responsive_rules: [{ width: 390 }, { width: 768 }, { width: 1280 }, { width: 1440 }, { width: 1920 }] }],
       state_matrix: { button: ["default", "loading", "empty", "error", "disabled"], card: ["default", "loading", "empty", "error"] },
       repair_round: 0,
@@ -68,7 +68,7 @@ export default function Builder() {
   };
 
   const handleExport = () => {
-    const t = tokens || generateTokens("#FFEA00");
+    const t = tokens || generateTokens("#0059ff");
     setTokens(t);
     const packet = {
       build_spec: { project_id: project.name, seed: project.seed, platforms: project.platforms, selected_patterns: Object.fromEntries(Object.entries(selection).map(([k, v]) => [k, v.id])), registry_version: REGISTRY_VERSION },
@@ -101,7 +101,7 @@ export default function Builder() {
         <LeftRail active={activeNav} setActive={setActiveNav} collapsed={railCollapsed} setCollapsed={setRailCollapsed} />
         <LibraryPanel family={family} setFamily={setFamily} selection={selection} onSelect={handleSelect} onFreeze={handleFreeze} />
         <PreviewCanvas viewport={viewport} theme={theme} selection={selection} project={project} />
-        <Inspector selection={selection} family={family} tokens={tokens || generateTokens("#FFEA00")} tab={inspectorTab} setTab={setInspectorTab} />
+        <Inspector selection={selection} family={family} tokens={tokens || generateTokens("#0059ff")} tab={inspectorTab} setTab={setInspectorTab} />
       </div>
       <ValidationDrawer validation={validation} open={valOpen} setOpen={setValOpen} />
     </div>

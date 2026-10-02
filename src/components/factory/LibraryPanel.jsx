@@ -47,7 +47,7 @@ export default function LibraryPanel({ family, setFamily, selection, onSelect, o
             type="checkbox"
             checked={compatOnly}
             onChange={(e) => setCompatOnly(e.target.checked)}
-            className="accent-[#FFEA00]"
+            className="accent-[#0059ff]"
           />
           Compatible only (score ≥ 75)
         </label>
@@ -85,7 +85,7 @@ export default function LibraryPanel({ family, setFamily, selection, onSelect, o
               onClick={() => onSelect(family, p)}
               className={`w-full text-left rounded-xl border p-3 transition-all ${
                 isSel
-                  ? "border-[#FFEA00] bg-[#FFEA00]/5 shadow-[0_0_14px_-6px_rgba(255,234,0,0.5)]"
+                  ? "border-[#0059ff] bg-[#0059ff]/5 shadow-[0_0_14px_-6px_rgba(0,89,255,0.5)]"
                   : "border-border hover:border-foreground/20 hover:bg-muted/50"
               }`}
             >
@@ -93,13 +93,13 @@ export default function LibraryPanel({ family, setFamily, selection, onSelect, o
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span className="text-xs font-mono font-semibold text-muted-foreground">{p.id}</span>
-                    {frozen && <Lock className="w-3 h-3 text-[#CCBB00]" />}
+                    {frozen && <Lock className="w-3 h-3 text-[#0d2f96]" />}
                   </div>
                   <div className="text-sm font-semibold text-foreground truncate mt-0.5">{p.name}</div>
                 </div>
                 {score != null && (
                   <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                    eligible ? "bg-[#FFFBCC] text-[#8A7300]" : "bg-red-50 text-red-600"
+                    eligible ? "bg-[#e6f0ff] text-[#0d2f96]" : "bg-red-50 text-red-600"
                   }`}>
                     {score}
                   </span>
@@ -115,7 +115,7 @@ export default function LibraryPanel({ family, setFamily, selection, onSelect, o
               {isSel && (
                 <button
                   onClick={(e) => { e.stopPropagation(); onFreeze(family, p.id); }}
-                  className="mt-2 flex items-center gap-1 text-[10px] font-semibold text-[#CCBB00] hover:text-[#FFEA00]"
+                  className="mt-2 flex items-center gap-1 text-[10px] font-semibold text-[#0d2f96] hover:text-[#0059ff]"
                 >
                   <Star className="w-3 h-3" />
                   {frozen ? "Frozen" : "Freeze selection"}

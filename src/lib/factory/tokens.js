@@ -75,7 +75,7 @@ export function semanticRoles(hue, sat = 100, mode = "light") {
 }
 
 // Generate full token set across 4 theme modes.
-export function generateTokens(seedColor = "#FFEA00") {
+export function generateTokens(seedColor = "#0059ff") {
   // Derive hue from seed hex.
   const hex = seedColor.replace("#", "");
   const r = parseInt(hex.slice(0, 2), 16) / 255;

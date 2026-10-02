@@ -44,7 +44,7 @@ export default function LeadScraper() {
         <Link to="/agents" className="p-2 rounded-lg hover:bg-muted"><ArrowLeft className="w-4 h-4" /></Link>
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <Search className="w-5 h-5 text-[#CCBB00]" />
+            <Search className="w-5 h-5 text-[#0d2f96]" />
             <h1 className="text-xl font-black font-heading">{sys.name}</h1>
             <span className="xa-pill-badge" style={{ fontSize: 9, padding: "2px 8px" }}>v{sys.version}</span>
             <span className="text-[10px] font-mono text-muted-foreground">source v{sys.source_version}</span>
@@ -68,7 +68,7 @@ export default function LeadScraper() {
             const Icon = c.icon;
             return (
               <div key={c.label} className="flex items-center gap-2 text-xs">
-                <Icon className="w-3.5 h-3.5 text-[#CCBB00]" />
+                <Icon className="w-3.5 h-3.5 text-[#0d2f96]" />
                 <span className="font-medium">{c.label}</span>
               </div>
             );
@@ -105,7 +105,7 @@ export default function LeadScraper() {
       {/* Adapter requirements */}
       <div className="xa-card p-4 mb-4">
         <div className="flex items-center gap-2 mb-3">
-          <Workflow className="w-3.5 h-3.5 text-[#CCBB00]" />
+          <Workflow className="w-3.5 h-3.5 text-[#0d2f96]" />
           <h2 className="text-xs font-bold uppercase tracking-wide">External Adapters</h2>
         </div>
         <div className="space-y-1.5">

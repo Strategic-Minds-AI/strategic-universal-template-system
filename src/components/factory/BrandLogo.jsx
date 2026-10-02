@@ -11,7 +11,7 @@ export default function BrandLogo({ size = 32, withWordmark = true }) {
       {withWordmark && (
         <div className="leading-none">
           <div className="font-heading font-black tracking-tight text-[15px] text-foreground">
-            Strategic Minds <span className="text-[#CCBB00]">AI</span>
+            Strategic Minds <span className="text-[#0d2f96]">AI</span>
           </div>
           <div className="text-[10px] font-medium text-muted-foreground tracking-wide uppercase">
             Strategy First · Intelligence Applied

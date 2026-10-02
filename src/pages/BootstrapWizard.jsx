@@ -87,7 +87,7 @@ export default function BootstrapWizard() {
         {/* Questionnaire */}
         <div className="xa-card p-4">
           <h2 className="text-xs font-bold uppercase tracking-wide mb-3 flex items-center gap-2">
-            <span className="text-[#CCBB00]">①</span> Brand Questionnaire
+            <span className="text-[#0d2f96]">①</span> Brand Questionnaire
           </h2>
           <div className="space-y-3 max-h-[60vh] overflow-y-auto xa-scroll pr-1">
             {agent.template.variables_schema.map((v) => (
@@ -107,7 +107,7 @@ export default function BootstrapWizard() {
                     className="w-full px-2.5 py-1.5 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring" />
                 ) : v.type === "color" ? (
                   <div className="flex gap-2 items-center">
-                    <input type="color" value={answers[v.key] ?? "#FFEA00"} onChange={(e) => setAnswers({ ...answers, [v.key]: e.target.value })}
+                    <input type="color" value={answers[v.key] ?? "#0059ff"} onChange={(e) => setAnswers({ ...answers, [v.key]: e.target.value })}
                       className="w-10 h-9 rounded-lg border border-input bg-background p-1" />
                     <input type="text" value={answers[v.key] ?? ""} onChange={(e) => setAnswers({ ...answers, [v.key]: e.target.value })}
                       className="flex-1 px-2.5 py-1.5 text-sm font-mono rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring" />
@@ -143,7 +143,7 @@ export default function BootstrapWizard() {
         {/* Live preview / packet */}
         <div className="xa-card p-4">
           <h2 className="text-xs font-bold uppercase tracking-wide mb-3 flex items-center gap-2">
-            <span className="text-[#CCBB00]">②</span> {packet && !packet.error ? "Rendered Packet" : "Live Preview"}
+            <span className="text-[#0d2f96]">②</span> {packet && !packet.error ? "Rendered Packet" : "Live Preview"}
           </h2>
 
           {!packet && (

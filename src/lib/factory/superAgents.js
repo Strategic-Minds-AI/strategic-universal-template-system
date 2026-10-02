@@ -15,7 +15,7 @@ const COMMON_VARIABLES = [
   { key: "business_name", label: "Business Name", type: "text", required: true, help: "The brand / company name." },
   { key: "tagline", label: "Tagline", type: "text", required: false, help: "One-line value proposition." },
   { key: "logo_url", label: "Logo URL", type: "image", required: true, help: "Public URL to the logo image." },
-  { key: "accent_color", label: "Accent Color", type: "color", required: true, default: "#FFEA00", help: "Primary brand accent (hex)." },
+  { key: "accent_color", label: "Accent Color", type: "color", required: true, default: "#0059ff", help: "Primary brand accent (hex)." },
   { key: "industry", label: "Industry", type: "text", required: true, help: "e.g. HVAC, dental, SaaS, legal." },
   { key: "primary_goal", label: "Primary Goal", type: "select", required: true, default: "lead_generation",
     options: ["lead_generation", "ecommerce_sales", "bookings", "content_subscribers", "brand_awareness"], help: "What the built system must drive." },

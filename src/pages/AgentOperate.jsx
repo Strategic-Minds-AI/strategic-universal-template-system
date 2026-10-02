@@ -34,7 +34,7 @@ export default function AgentOperate() {
       </div>
 
       <div className="xa-card p-4 mb-4">
-        <h2 className="text-xs font-bold uppercase tracking-wide mb-2 flex items-center gap-1"><Terminal className="w-3.5 h-3.5 text-[#CCBB00]" /> Entity Tools · Tier {agent.tier} (full CRUD)</h2>
+        <h2 className="text-xs font-bold uppercase tracking-wide mb-2 flex items-center gap-1"><Terminal className="w-3.5 h-3.5 text-[#0d2f96]" /> Entity Tools · Tier {agent.tier} (full CRUD)</h2>
         <div className="space-y-1.5 mb-3">
           {(agent.tool_configs || []).map((t) => (
             <div key={t.entity_name} className="flex items-center justify-between text-[11px]">
@@ -66,7 +66,7 @@ export default function AgentOperate() {
 
       <div className="xa-card p-4">
         <div className="flex items-center gap-2 mb-2">
-          <Wrench className="w-3.5 h-3.5 text-[#CCBB00]" />
+          <Wrench className="w-3.5 h-3.5 text-[#0d2f96]" />
           <span className="text-xs font-semibold">Give {agent.name} a goal</span>
         </div>
         <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={3} disabled

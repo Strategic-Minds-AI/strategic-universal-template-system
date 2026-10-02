@@ -45,7 +45,7 @@ export default function Dashboard() {
   ];
 
   const statusColor = (s) => ({
-    PASSED: "text-[#CCBB00] bg-[#FFFBCC]", FAILED: "text-red-600 bg-red-50",
+    PASSED: "text-[#0d2f96] bg-[#e6f0ff]", FAILED: "text-red-600 bg-red-50",
     BLOCKED: "text-amber-600 bg-amber-50", RUNNING: "text-blue-600 bg-blue-50",
     WAITING_APPROVAL: "text-purple-600 bg-purple-50", CANCELLED: "text-gray-500 bg-gray-50",
     EXPORTED: "text-green-600 bg-green-50",
@@ -66,7 +66,7 @@ export default function Dashboard() {
           const Icon = c.icon;
           return (
             <Link key={c.label} to={c.to} className="xa-card p-4 hover:shadow-md transition-shadow">
-              <Icon className="w-5 h-5 text-[#CCBB00] mb-2" />
+              <Icon className="w-5 h-5 text-[#0d2f96] mb-2" />
               <div className="text-2xl font-black font-heading">{loading ? "—" : (c.value ?? 0)}</div>
               <div className="text-xs text-muted-foreground font-medium">{c.label}</div>
               {c.hint && <div className="text-[10px] text-muted-foreground mt-0.5">{c.hint}</div>}
@@ -78,12 +78,12 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-4">
         <div className="xa-card p-5 lg:col-span-2">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-4 h-4 text-[#CCBB00]" />
+            <Activity className="w-4 h-4 text-[#0d2f96]" />
             <h2 className="text-sm font-bold uppercase tracking-wide">Recent Runs</h2>
           </div>
           {recentRuns.length === 0 ? (
             <div className="text-sm text-muted-foreground py-8 text-center">
-              No runs yet. <Link to="/generators" className="text-[#CCBB00] font-semibold underline">Browse generators</Link> to start one.
+              No runs yet. <Link to="/generators" className="text-[#0d2f96] font-semibold underline">Browse generators</Link> to start one.
             </div>
           ) : (
             <div className="space-y-2">
@@ -102,7 +102,7 @@ export default function Dashboard() {
 
         <div className="xa-card p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-4 h-4 text-[#CCBB00]" />
+            <Zap className="w-4 h-4 text-[#0d2f96]" />
             <h2 className="text-sm font-bold uppercase tracking-wide">Adapter Health</h2>
           </div>
           <div className="space-y-2">

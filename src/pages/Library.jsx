@@ -74,7 +74,7 @@ export default function Library() {
           {items.map((p) => (
             <div key={p.id} className="xa-card p-4 hover:border-foreground/20 transition-colors">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-mono font-bold text-[#CCBB00]">{p.id}</span>
+                <span className="text-xs font-mono font-bold text-[#0d2f96]">{p.id}</span>
               </div>
               <div className="font-heading font-bold text-sm text-foreground">{p.name}</div>
               {p.tags && p.tags.length > 0 && (

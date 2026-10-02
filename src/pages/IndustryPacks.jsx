@@ -27,7 +27,7 @@ export default function IndustryPacks() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {filtered.map((p) => (
           <div key={p.id} className="xa-card p-4">
-            <div className="text-xs font-mono font-bold text-[#CCBB00] mb-1">{p.id}</div>
+            <div className="text-xs font-mono font-bold text-[#0d2f96] mb-1">{p.id}</div>
             <div className="font-heading font-bold text-sm">{p.name}</div>
             {p.purpose && <div className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.purpose}</div>}
             {p.tags && p.tags.length > 0 && (

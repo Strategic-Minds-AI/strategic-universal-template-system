@@ -50,9 +50,9 @@ export default function CapabilityRegistry() {
         {all.map((f) => {
           const Icon = f.icon;
           return (
-            <Link key={f.entity} to={f.to} className="xa-card p-4 hover:border-[#FFEA00] hover:shadow-[0_0_14px_-6px_rgba(255,234,0,0.5)] transition-all">
+            <Link key={f.entity} to={f.to} className="xa-card p-4 hover:border-[#0059ff] hover:shadow-[0_0_14px_-6px_rgba(0,89,255,0.5)] transition-all">
               <div className="flex items-center gap-2 mb-2">
-                <Icon className="w-4 h-4 text-[#CCBB00]" />
+                <Icon className="w-4 h-4 text-[#0d2f96]" />
                 <div className="font-heading font-bold text-sm">{f.label}</div>
               </div>
               <div className="text-2xl font-black font-heading">{loading ? "—" : (f.count ?? 0)}</div>

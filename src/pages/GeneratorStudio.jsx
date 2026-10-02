@@ -99,7 +99,7 @@ export default function GeneratorStudio() {
           <div className="space-y-2">
             {(dag.nodes || []).map((n) => (
               <div key={n.id} className="flex items-center gap-3 p-2 rounded-lg bg-muted/40">
-                <span className="w-2 h-2 rounded-full bg-[#CCBB00]" />
+                <span className="w-2 h-2 rounded-full bg-[#0d2f96]" />
                 <span className="font-mono text-xs font-semibold">{n.id}</span>
                 <span className="text-xs text-muted-foreground">· {n.type}</span>
               </div>
@@ -117,7 +117,7 @@ export default function GeneratorStudio() {
           <div className="xa-card p-5">
             <div className="font-bold text-sm mb-2">Validation Policy</div>
             <div className="flex flex-wrap gap-1">
-              {(def.definition?.validation_policy?.mandatory || []).map((m) => <span key={m} className="text-[10px] font-mono text-[#CCBB00] bg-[#FFFBCC] px-1.5 py-0.5 rounded">{m}</span>)}
+              {(def.definition?.validation_policy?.mandatory || []).map((m) => <span key={m} className="text-[10px] font-mono text-[#0d2f96] bg-[#e6f0ff] px-1.5 py-0.5 rounded">{m}</span>)}
             </div>
           </div>
         </div>

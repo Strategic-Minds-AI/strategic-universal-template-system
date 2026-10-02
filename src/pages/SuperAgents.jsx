@@ -41,8 +41,8 @@ export default function SuperAgents() {
             <div className="flex items-start justify-between mb-2">
               <span className="text-2xl">{a.icon}</span>
               <div className="flex flex-col items-end gap-1">
-                {a.apex && <span className="text-[9px] font-bold uppercase tracking-wider text-[#CCBB00] bg-[#FFFBCC] px-1.5 py-0.5 rounded">Apex</span>}
-                {a.flagship && <span className="text-[9px] font-bold uppercase tracking-wider text-[#CCBB00] bg-[#FFFBCC] px-1.5 py-0.5 rounded">Flagship</span>}
+                {a.apex && <span className="text-[9px] font-bold uppercase tracking-wider text-[#0d2f96] bg-[#e6f0ff] px-1.5 py-0.5 rounded">Apex</span>}
+                {a.flagship && <span className="text-[9px] font-bold uppercase tracking-wider text-[#0d2f96] bg-[#e6f0ff] px-1.5 py-0.5 rounded">Flagship</span>}
               </div>
             </div>
             <h3 className="font-heading font-bold text-sm text-foreground">{a.name}</h3>
@@ -67,7 +67,7 @@ export default function SuperAgents() {
 
       <div className="xa-card p-4 mt-5 border-amber-200">
         <div className="flex items-start gap-3">
-          <ArrowRight className="w-4 h-4 text-[#CCBB00] shrink-0 mt-0.5" />
+          <ArrowRight className="w-4 h-4 text-[#0d2f96] shrink-0 mt-0.5" />
           <div className="text-xs text-muted-foreground">
             <strong className="text-foreground">How it works:</strong> Pick an agent → answer the brand questionnaire (logo, accent color, content, images, variables) →
             the factory deterministically renders a ready-to-go template packet (file tree + manifest, SHA-256 integrity).

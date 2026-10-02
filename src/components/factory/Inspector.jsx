@@ -27,7 +27,7 @@ export default function Inspector({ selection, family, tokens, setTab, tab }) {
                 onClick={() => { setLocalTab(t.id); setTab?.(t.id); }}
                 className={`shrink-0 flex items-center gap-1.5 px-3 py-2.5 text-xs font-semibold border-b-2 transition-colors ${
                   activeTab === t.id
-                    ? "border-[#FFEA00] text-foreground"
+                    ? "border-[#0059ff] text-foreground"
                     : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -67,8 +67,8 @@ function PropertiesTab({ pattern, family }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <span className="text-xs font-mono font-bold text-[#CCBB00]">{pattern.id}</span>
-        {pattern.frozen && <Lock className="w-3.5 h-3.5 text-[#CCBB00]" />}
+        <span className="text-xs font-mono font-bold text-[#0d2f96]">{pattern.id}</span>
+        {pattern.frozen && <Lock className="w-3.5 h-3.5 text-[#0d2f96]" />}
       </div>
       <h3 className="font-heading font-bold text-base text-foreground">{pattern.name}</h3>
       <div className="xa-card xa-card-subtle p-3 space-y-1.5">
@@ -116,7 +116,7 @@ function TokensTab({ tokens }) {
         {Object.entries(tokens.contrast_checks || {}).map(([pair, ratio]) => (
           <div key={pair} className="flex items-center justify-between text-xs">
             <span className="font-mono text-muted-foreground">{pair}</span>
-            <span className={`font-bold ${ratio >= 4.5 ? "text-[#CCBB00]" : "text-red-600"}`}>{ratio.toFixed(2)}:1</span>
+            <span className={`font-bold ${ratio >= 4.5 ? "text-[#0d2f96]" : "text-red-600"}`}>{ratio.toFixed(2)}:1</span>
           </div>
         ))}
       </div>
@@ -131,7 +131,7 @@ function StatesTab({ pattern }) {
       <div className="text-xs font-semibold text-muted-foreground mb-2">Required state matrix</div>
       {states.map((s) => (
         <div key={s} className="flex items-center gap-2 text-xs">
-          <span className="w-2 h-2 rounded-full bg-[#CCBB00]" />
+          <span className="w-2 h-2 rounded-full bg-[#0d2f96]" />
           <span className="font-mono text-foreground">{s}</span>
         </div>
       ))}

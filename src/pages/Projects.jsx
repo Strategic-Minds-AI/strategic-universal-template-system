@@ -107,7 +107,7 @@ export default function Projects() {
               <button
                 key={p.id}
                 onClick={() => navigate(`/builder?project=${p.id}`)}
-                className="xa-card p-4 text-left hover:border-[#FFEA00] hover:shadow-[0_0_14px_-6px_rgba(255,234,0,0.5)] transition-all"
+                className="xa-card p-4 text-left hover:border-[#0059ff] hover:shadow-[0_0_14px_-6px_rgba(0,89,255,0.5)] transition-all"
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="xa-pill-badge" style={{ fontSize: 9, padding: "2px 8px" }}>{p.mode || "guided"}</span>

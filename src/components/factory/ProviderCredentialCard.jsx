@@ -94,7 +94,7 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
                     <button type="button" onClick={() => { const arr = (config[f.key] || []).filter((_, j) => j !== i); setField(f.key, arr); }} className="h-9 px-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-muted"><X className="w-3.5 h-3.5" /></button>
                   </div>
                 ))}
-                <button type="button" onClick={() => setField(f.key, [...(config[f.key] || []), { name: "", ref: "" }])} className="text-[11px] font-semibold text-[#CCBB00] inline-flex items-center gap-1 hover:underline"><Plus className="w-3 h-3" /> Add project</button>
+                <button type="button" onClick={() => setField(f.key, [...(config[f.key] || []), { name: "", ref: "" }])} className="text-[11px] font-semibold text-[#0d2f96] inline-flex items-center gap-1 hover:underline"><Plus className="w-3 h-3" /> Add project</button>
               </div>
             </div>
           ) : (

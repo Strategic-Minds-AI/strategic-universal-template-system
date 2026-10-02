@@ -63,7 +63,7 @@ export default function FactoryLayout() {
                     end={it.end}
                     className={({ isActive }) =>
                       `flex items-center gap-2.5 mx-2 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        isActive ? "bg-[#FFEA00] text-black" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                        isActive ? "bg-[#0059ff] text-black" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                       }`
                     }
                     title={it.label}

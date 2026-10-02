@@ -61,7 +61,7 @@ function PreviewContent({ isMobile, isTablet, selection, project, color, nav, mo
       {/* Top nav bar */}
       <div className="h-12 border-b border-border flex items-center justify-between px-4 bg-white">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#FFF7B3] to-[#CCBB00]" />
+          <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#80b3ff] to-[#0d2f96]" />
           <span className="text-xs font-bold">[BRAND_NAME]</span>
         </div>
         {!isMobile && (
@@ -73,7 +73,7 @@ function PreviewContent({ isMobile, isTablet, selection, project, color, nav, mo
       </div>
 
       {/* Hero */}
-      <div className="px-6 py-10 text-center bg-gradient-to-b from-[#FFFBCC]/40 to-white">
+      <div className="px-6 py-10 text-center bg-gradient-to-b from-[#e6f0ff]/40 to-white">
         <span className="xa-pill-badge mb-3" style={{ fontSize: 9 }}>{selection.domain_packs?.name || "Domain Pack"}</span>
         <h1 className="font-heading font-black text-2xl md:text-3xl text-foreground leading-tight">
           [HEADLINE_VALUE_PROPOSITION]
@@ -93,7 +93,7 @@ function PreviewContent({ isMobile, isTablet, selection, project, color, nav, mo
         <div className="flex items-center flex-wrap gap-1.5 text-[10px] font-mono text-muted-foreground">
           {flow.split(">").map((step, i) => (
             <React.Fragment key={i}>
-              {i > 0 && <span className="text-[#CCBB00]">›</span>}
+              {i > 0 && <span className="text-[#0d2f96]">›</span>}
               <span className="px-1.5 py-0.5 rounded bg-white border border-border">{step.trim()}</span>
             </React.Fragment>
           ))}
@@ -105,7 +105,7 @@ function PreviewContent({ isMobile, isTablet, selection, project, color, nav, mo
         {[1, 2, 3].map((i) => (
           <div key={i} className="xa-card xa-card-subtle p-4">
             <div className="xa-icon-chip mb-3" style={{ width: 36, height: 36 }}>
-              <span className="text-xs font-bold text-[#CCBB00]">0{i}</span>
+              <span className="text-xs font-bold text-[#0d2f96]">0{i}</span>
             </div>
             <div className="text-sm font-bold text-foreground">[FEATURE_{i}_TITLE]</div>
             <div className="text-xs text-muted-foreground mt-1">[FEATURE_{i}_DESCRIPTION]</div>

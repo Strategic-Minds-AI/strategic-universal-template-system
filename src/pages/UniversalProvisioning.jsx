@@ -155,7 +155,7 @@ export default function UniversalProvisioning() {
 
       {/* Section 1: credential boxes */}
       <div className="flex items-center gap-2 mb-2.5">
-        <Layers className="w-3.5 h-3.5 text-[#CCBB00]" />
+        <Layers className="w-3.5 h-3.5 text-[#0d2f96]" />
         <h2 className="text-xs font-bold uppercase tracking-wide">Provider Credentials</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
@@ -167,7 +167,7 @@ export default function UniversalProvisioning() {
       {/* Section 2: provisioning plan builder */}
       <div className="xa-card p-4 mb-4">
         <div className="flex items-center gap-2 mb-3">
-          <ClipboardList className="w-3.5 h-3.5 text-[#CCBB00]" />
+          <ClipboardList className="w-3.5 h-3.5 text-[#0d2f96]" />
           <h2 className="text-xs font-bold uppercase tracking-wide">Provisioning Plan Builder (dry-run)</h2>
         </div>
         <div className="grid md:grid-cols-3 gap-3 mb-3">
@@ -192,7 +192,7 @@ export default function UniversalProvisioning() {
             return (
               <button key={p.key} onClick={() => toggleProvider(p.key)}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
-                  selected[p.key] ? "bg-[#FFEA00] text-black border-transparent" : "bg-background text-muted-foreground border-border hover:text-foreground"
+                  selected[p.key] ? "bg-[#0059ff] text-black border-transparent" : "bg-background text-muted-foreground border-border hover:text-foreground"
                 }`}>
                 <p.Icon className="w-3.5 h-3.5" />
                 {p.name}
