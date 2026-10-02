@@ -9,6 +9,7 @@ import {
   ChevronLeft, ChevronRight, Menu, X,
 } from "lucide-react";
 import BrandLogo from "./BrandLogo.jsx";
+import AgentChat from "@/components/AgentChat.jsx";
 
 const NAV = [
   { group: "Factory", items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, end: true }, { to: "/projects", label: "Projects", icon: FolderKanban }] },
@@ -98,6 +99,7 @@ export default function FactoryLayout() {
           <Outlet />
         </div>
       </main>
+      <AgentChat />
     </div>
   );
 }
