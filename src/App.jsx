@@ -33,6 +33,9 @@ import AuditReceipts from '@/pages/AuditReceipts';
 import Settings from '@/pages/Settings';
 import CapabilityRegistry from '@/pages/CapabilityRegistry';
 import ProfileRegistry from '@/pages/ProfileRegistry';
+import SuperAgents from '@/pages/SuperAgents';
+import BootstrapWizard from '@/pages/BootstrapWizard';
+import AgentOperate from '@/pages/AgentOperate';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -85,6 +88,9 @@ const AuthenticatedApp = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/capabilities" element={<CapabilityRegistry />} />
           <Route path="/registry/:entity" element={<ProfileRegistry />} />
+          <Route path="/agents" element={<SuperAgents />} />
+          <Route path="/bootstrap" element={<BootstrapWizard />} />
+          <Route path="/agents/chat" element={<AgentOperate />} />
         </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />

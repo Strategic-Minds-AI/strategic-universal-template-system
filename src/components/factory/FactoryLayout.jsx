@@ -17,7 +17,7 @@ const NAV = [
   { group: "Execution", items: [{ to: "/runs", label: "Run Console", icon: Terminal }, { to: "/artifacts", label: "Artifact Explorer", icon: Package }] },
   { group: "Quality", items: [{ to: "/validation", label: "Validation Center", icon: ShieldCheck }, { to: "/repair", label: "Repair Center", icon: Hammer }] },
   { group: "Operations", items: [{ to: "/provisioning", label: "Provisioning Center", icon: Server }, { to: "/approvals", label: "Approvals", icon: CheckSquare }, { to: "/adapters", label: "Adapter Library", icon: Plug }] },
-  { group: "Intelligence", items: [{ to: "/consulting", label: "AI Consulting", icon: Brain }, { to: "/builder", label: "Frontend Factory", icon: MonitorSmartphone }, { to: "/industries", label: "Industry Packs", icon: Globe }] },
+  { group: "Intelligence", items: [{ to: "/agents", label: "Super Agents", icon: Brain }, { to: "/bootstrap", label: "Bootstrap Wizard", icon: Wrench }, { to: "/consulting", label: "AI Consulting", icon: Brain }, { to: "/builder", label: "Frontend Factory", icon: MonitorSmartphone }, { to: "/industries", label: "Industry Packs", icon: Globe }] },
   { group: "Admin", items: [{ to: "/usage", label: "Usage / Budgets", icon: Gauge }, { to: "/audit", label: "Audit / Receipts", icon: ScrollText }, { to: "/settings", label: "Settings", icon: Settings }] },
 ];
 
