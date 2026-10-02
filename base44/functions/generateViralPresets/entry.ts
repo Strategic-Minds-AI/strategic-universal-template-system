@@ -28,7 +28,13 @@ export default async function (req) {
 
     let presets = [];
     try {
-      const parsed = JSON.parse(content);
+      let s = (content || "").trim();
+      const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
+      if (fence) s = fence[1].trim();
+      const start = s.indexOf("{");
+      const end = s.lastIndexOf("}");
+      if (start >= 0 && end > start) s = s.slice(start, end + 1);
+      const parsed = JSON.parse(s);
       presets = (parsed && parsed.presets) || [];
     } catch {
       presets = [];
