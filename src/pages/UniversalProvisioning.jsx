@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Server, Database, Rocket, Github, Train, Globe, Layers, Loader2, ClipboardList, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { Server, Database, Rocket, Github, Train, Globe, Layers, Loader2, ClipboardList, AlertTriangle, CheckCircle2, Sparkles } from "lucide-react";
 import ProviderCredentialCard from "@/components/factory/ProviderCredentialCard.jsx";
 import { StatusPill } from "@/components/factory/EntityListPage.jsx";
 
@@ -10,8 +10,8 @@ const PROVISIONING_PROVIDERS = [
   {
     key: "supabase", adapter_key: "supabase", name: "Supabase", version: "1.0.0", Icon: Database,
     capabilities: ["project_admin", "schema_apply", "storage_admin", "auth_admin"],
-    help: "Provision Supabase projects, schemas, storage and auth. Uses the Personal Access Token (PAT) from supabase.com → Account → Access Tokens — NOT the service_role key, which only reads/writes data inside an existing project.",
-    config_fields: [{ key: "ref", label: "Project Ref (optional, for existing project)", required: false, placeholder: "abcdefghijklmnop" }],
+    help: "Provision Supabase projects, schemas, storage and auth. Add multiple projects below. Uses the Personal Access Token (PAT) from supabase.com → Account → Access Tokens — NOT the service_role key, which only reads/writes data inside an existing project.",
+    config_fields: [{ key: "projects", label: "Supabase projects", type: "projects", required: false }],
     secret_references: ["SUPABASE_ACCESS_TOKEN"],
   },
   {
@@ -22,11 +22,29 @@ const PROVISIONING_PROVIDERS = [
     secret_references: ["VERCEL_TOKEN"],
   },
   {
+    key: "vercel_ai_gateway", adapter_key: "vercel_ai_gateway", name: "Vercel AI Gateway", version: "1.0.0", Icon: Sparkles,
+    capabilities: ["ai_model_access", "rate_limit", "fallback"],
+    help: "Access 100+ AI models through one Vercel AI Gateway endpoint. Uses the AI Gateway API key from vercel.com → AI Gateway.",
+    config_fields: [],
+    secret_references: ["VERCEL_AI_GATEWAY_KEY"],
+  },
+  {
     key: "github", adapter_key: "github", name: "GitHub", version: "1.0.0", Icon: Github,
     capabilities: ["repo_create", "branch_create", "pr_create", "content_write"],
-    help: "Provision GitHub repositories, branches, pull requests and content writes.",
+    help: "Provision GitHub repositories, branches, pull requests and content writes using a Personal Access Token.",
     config_fields: [{ key: "owner", label: "Owner / Org", required: true, placeholder: "your-org" }],
     secret_references: ["GITHUB_TOKEN"],
+  },
+  {
+    key: "github_app", adapter_key: "github_app", name: "GitHub App", version: "1.0.0", Icon: Github,
+    capabilities: ["repo_admin", "installation", "content_write", "checks"],
+    help: "Provision as a GitHub App (server-to-server). Uses App ID, Installation ID and Private Key (PEM). Generates installation access tokens at runtime.",
+    config_fields: [
+      { key: "appId", label: "App ID", required: true, placeholder: "123456" },
+      { key: "installationId", label: "Installation ID", required: true, placeholder: "67890" },
+      { key: "clientId", label: "Client ID (optional)", required: false, placeholder: "Iv1.abc" },
+    ],
+    secret_references: [{ name: "GITHUB_APP_PRIVATE_KEY", multiline: true, label: "Private Key (PEM)" }],
   },
   {
     key: "railway", adapter_key: "railway", name: "Railway", version: "1.0.0", Icon: Train,
