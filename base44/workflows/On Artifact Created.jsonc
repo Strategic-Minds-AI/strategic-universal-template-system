@@ -1,0 +1,50 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "Artifact"
+    }
+  },
+  "description": "When a new Artifact is created, logs an audit event tracking artifact provenance.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_artifact_created",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_artifact": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "artifact_created",
+              "entity_type": "Artifact",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Artifact Created",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "step_key": "${ .trigger.data.step_key }",
+                "name": "${ .trigger.data.name }",
+                "sha256": "${ .trigger.data.sha256 }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log artifact",
+            "description": "Track artifact provenance"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On Artifact Created"
+}

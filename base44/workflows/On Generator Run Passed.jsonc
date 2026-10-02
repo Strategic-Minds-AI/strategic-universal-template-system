@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Run Passed",
+  "description": "When a GeneratorRun transitions to PASSED, logs a success audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorRun",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"PASSED\" and .trigger.old_data.status != \"PASSED\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_run_passed",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_success": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_run_passed",
+              "entity_type": "GeneratorRun",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Run Passed",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log success",
+            "description": "Audit on run success"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 2 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every night at 2am ET, logs a nightly snapshot audit event for tracking purposes.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "nightly_audit_snapshot",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_snapshot": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "nightly_snapshot",
+              "entity_type": "System",
+              "entity_id": "factory",
+              "severity": "info",
+              "workflow_name": "Nightly Audit Snapshot",
+              "payload": {
+                "note": "Automated nightly snapshot marker"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log snapshot",
+            "description": "Nightly marker event"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Nightly Audit Snapshot"
+}

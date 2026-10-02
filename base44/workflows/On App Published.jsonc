@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "app_publish",
+      "events": [
+        "published"
+      ]
+    }
+  },
+  "description": "When the app is published (any publish), logs an audit event tracking the deployment.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_app_published",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_publish": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "app_published",
+              "entity_type": "App",
+              "entity_id": "factory",
+              "severity": "info",
+              "workflow_name": "On App Published",
+              "payload": {
+                "visibility": "${ .trigger.visibility }",
+                "occurred_at": "${ .trigger.occurred_at }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log publish",
+            "description": "Audit on app publish"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On App Published"
+}

@@ -1,0 +1,48 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "app_user_auth",
+      "events": [
+        "signup"
+      ]
+    }
+  },
+  "description": "When a new user signs up, logs an audit event with a welcome context.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_user_signup",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_signup": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "user_signup",
+              "entity_type": "User",
+              "entity_id": "${ .trigger.user_id }",
+              "severity": "info",
+              "workflow_name": "On User Signup",
+              "payload": {
+                "email": "${ .trigger.email }",
+                "auth_method": "${ .trigger.auth_method }",
+                "role": "${ .trigger.role }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log signup",
+            "description": "Audit on new user signup"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On User Signup"
+}

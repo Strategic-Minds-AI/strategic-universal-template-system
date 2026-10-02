@@ -1,0 +1,49 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "AdapterDefinition"
+    }
+  },
+  "description": "When a new AdapterDefinition is created, logs an audit event noting the adapter registration.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_adapter_registered",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_adapter": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "adapter_registered",
+              "entity_type": "AdapterDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Adapter Registered",
+              "payload": {
+                "adapter_key": "${ .trigger.data.adapter_key }",
+                "name": "${ .trigger.data.name }",
+                "health_state": "${ .trigger.data.health_state }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log adapter",
+            "description": "Audit on new adapter"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On Adapter Registered"
+}

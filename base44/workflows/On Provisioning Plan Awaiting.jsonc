@@ -1,0 +1,49 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "ProvisioningPlan"
+    }
+  },
+  "description": "When a new ProvisioningPlan is created, logs an audit event for the approval pipeline.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_provisioning_plan_awaiting",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_plan": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "provisioning_plan_created",
+              "entity_type": "ProvisioningPlan",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Provisioning Plan Awaiting",
+              "payload": {
+                "project_id": "${ .trigger.data.project_id }",
+                "dry_run": "${ .trigger.data.dry_run }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log plan",
+            "description": "Audit on new provisioning plan"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On Provisioning Plan Awaiting"
+}

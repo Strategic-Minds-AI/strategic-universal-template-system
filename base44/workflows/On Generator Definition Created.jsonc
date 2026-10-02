@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "GeneratorDefinition"
+    }
+  },
+  "description": "When a new GeneratorDefinition is created, logs an audit event with an AI-drafted review summary.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_created",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_event": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_created",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Created",
+              "draft_summary": "A new generator definition was just created. Draft a one-sentence note suggesting what to validate next (e.g. schema, workflow DAG, output contract). Keep it under 50 words."
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log and review",
+            "description": "Audit + AI review suggestion"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On Generator Definition Created"
+}

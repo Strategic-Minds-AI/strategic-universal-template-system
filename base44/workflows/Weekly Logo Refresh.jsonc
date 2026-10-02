@@ -1,0 +1,73 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * 1",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Monday at 8am ET, generates a fresh brand logo concept via Vercel AI Gateway.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_logo_refresh",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "generate_logo": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "generateLogo",
+            "args": {
+              "brandName": "Strategic Minds",
+              "primaryColor": "#0059ff",
+              "secondaryColor": "#0d2f96",
+              "style": "A fresh geometric mark concept for the week, minimalist, no lettering, blue tones"
+            }
+          },
+          "then": "log_result",
+          "x-base44": {
+            "title": "Generate logo",
+            "description": "AI logo via Vercel Gateway"
+          }
+        }
+      },
+      {
+        "log_result": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "weekly_logo_refresh",
+              "entity_type": "Artifact",
+              "entity_id": "weekly-logo",
+              "severity": "info",
+              "workflow_name": "Weekly Logo Refresh",
+              "payload": {
+                "via": "vercel-ai-gateway"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log result",
+            "description": "Record logo generation"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Weekly Logo Refresh"
+}

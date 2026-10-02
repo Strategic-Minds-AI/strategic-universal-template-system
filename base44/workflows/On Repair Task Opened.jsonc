@@ -1,0 +1,49 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "RepairTask"
+    }
+  },
+  "description": "When a new RepairTask is created, logs a warning audit event with repair context.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_repair_task_opened",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_repair": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "repair_task_opened",
+              "entity_type": "RepairTask",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Repair Task Opened",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "failing_layer": "${ .trigger.data.failing_layer }",
+                "target_step": "${ .trigger.data.target_step_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repair",
+            "description": "Warn on new repair task"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On Repair Task Opened"
+}

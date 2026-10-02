@@ -1,0 +1,44 @@
+{
+  "name": "On First Publish",
+  "description": "When the app is published for the first time, logs a critical audit event marking the launch.",
+  "trigger": {
+    "config": {
+      "trigger_type": "app_publish",
+      "events": [
+        "published"
+      ]
+    },
+    "condition": "${ .trigger.is_first_publish }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_first_publish",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_launch": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "app_first_publish",
+              "entity_type": "App",
+              "entity_id": "factory",
+              "severity": "critical",
+              "workflow_name": "On First Publish",
+              "draft_summary": "The Strategic Minds AI factory was just published for the first time. Draft a celebratory one-sentence launch announcement. Keep under 30 words."
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log launch",
+            "description": "Critical audit on first publish"
+          }
+        }
+      }
+    ]
+  }
+}

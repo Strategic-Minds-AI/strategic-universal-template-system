@@ -1,0 +1,67 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every hour, pings the Vercel AI Gateway with a minimal prompt to verify connectivity.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hourly_gateway_check",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "ping_gateway": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "vercelAI",
+            "args": {
+              "prompt": "Reply with exactly: OK"
+            }
+          },
+          "then": "log_result",
+          "x-base44": {
+            "title": "Ping gateway",
+            "description": "Vercel AI Gateway connectivity check"
+          }
+        }
+      },
+      {
+        "log_result": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "gateway_health_check",
+              "entity_type": "AdapterDefinition",
+              "entity_id": "vercel-ai-gateway",
+              "severity": "info",
+              "workflow_name": "Hourly Gateway Check"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log result",
+            "description": "Record health check"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Hourly Gateway Check"
+}

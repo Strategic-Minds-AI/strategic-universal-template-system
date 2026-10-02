@@ -1,0 +1,48 @@
+{
+  "name": "On Approval Requested",
+  "description": "When a new Approval is created with pending status, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Approval",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"pending\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_approval_requested",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_approval": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "approval_requested",
+              "entity_type": "Approval",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Approval Requested",
+              "payload": {
+                "risk_class": "${ .trigger.data.risk_class }",
+                "action_key": "${ .trigger.data.action_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log approval",
+            "description": "Warn on pending approval"
+          }
+        }
+      }
+    ]
+  }
+}

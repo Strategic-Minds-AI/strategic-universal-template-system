@@ -1,0 +1,49 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "in_app_agent",
+      "events": [
+        "conversation_started"
+      ],
+      "agent_name": null
+    }
+  },
+  "description": "When an in-app agent conversation starts, logs an audit event tracking agent usage.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_agent_conversation",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_conversation": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "agent_conversation_started",
+              "entity_type": "Agent",
+              "entity_id": "${ .trigger.data.event.conversation_id }",
+              "severity": "info",
+              "workflow_name": "On Agent Conversation",
+              "payload": {
+                "agent_name": "${ .trigger.data.event.agent_name }",
+                "channel": "${ .trigger.data.event.channel }",
+                "user_id": "${ .trigger.data.app_user.id }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log conversation",
+            "description": "Audit on agent conversation start"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On Agent Conversation"
+}

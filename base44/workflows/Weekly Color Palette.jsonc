@@ -1,0 +1,70 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 1",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every Monday at 9am ET, generates fresh viral brand color presets via Vercel AI Gateway.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_color_palette",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "generate_presets": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "generateViralPresets",
+            "args": {
+              "count": 3
+            }
+          },
+          "then": "log_result",
+          "x-base44": {
+            "title": "Generate presets",
+            "description": "AI color palettes via Vercel Gateway"
+          }
+        }
+      },
+      {
+        "log_result": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "weekly_color_palette",
+              "entity_type": "Artifact",
+              "entity_id": "weekly-palette",
+              "severity": "info",
+              "workflow_name": "Weekly Color Palette",
+              "payload": {
+                "presets_generated": 3
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log result",
+            "description": "Record palette generation"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Weekly Color Palette"
+}

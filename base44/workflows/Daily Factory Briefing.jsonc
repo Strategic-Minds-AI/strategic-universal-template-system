@@ -1,0 +1,52 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 1-5",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every weekday at 9am ET, drafts an AI factory status briefing via Vercel AI Gateway and logs it as an audit event.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_factory_briefing",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_briefing": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "daily_briefing",
+              "entity_type": "System",
+              "entity_id": "factory",
+              "severity": "info",
+              "workflow_name": "Daily Factory Briefing",
+              "draft_summary": "Generate a concise 3-bullet morning briefing for the Strategic Minds AI factory operator. Cover: 1) what generators or runs likely need attention today, 2) any approvals or repair tasks that may be pending, 3) a motivational one-liner. Keep it under 150 words."
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Draft and log briefing",
+            "description": "AI status briefing via Vercel Gateway"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Factory Briefing"
+}

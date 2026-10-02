@@ -1,0 +1,45 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "TemplatePack"
+    }
+  },
+  "description": "When a new TemplatePack is created, logs an audit event with an AI-drafted review note.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_template_pack_created",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_template": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "template_pack_created",
+              "entity_type": "TemplatePack",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Template Pack Created",
+              "draft_summary": "A new template pack was created. Draft a one-sentence suggestion for what to validate first (e.g. manifest integrity, dependencies, variables schema). Keep under 40 words."
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log and review",
+            "description": "Audit + AI review note"
+          }
+        }
+      }
+    ]
+  },
+  "name": "On Template Pack Created"
+}
