@@ -1,0 +1,84 @@
+{
+  "name": "PolicyDefinition",
+  "type": "object",
+  "properties": {
+    "policy_key": {
+      "type": "string",
+      "title": "Stable policy key",
+      "pattern": "^[a-z0-9][a-z0-9._-]+$"
+    },
+    "name": {
+      "type": "string",
+      "title": "Policy name",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "title": "Semantic version",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "category": {
+      "type": "string",
+      "title": "Policy category"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "approved",
+        "frozen",
+        "deprecated",
+        "restored"
+      ],
+      "default": "draft",
+      "title": "Version status"
+    },
+    "definition": {
+      "type": "object",
+      "title": "Full policy definition JSON"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    }
+  },
+  "required": [
+    "policy_key",
+    "name",
+    "version",
+    "definition"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "name": "WorkflowDefinition",
+  "type": "object",
+  "properties": {
+    "workflow_key": {
+      "type": "string",
+      "title": "Stable workflow key",
+      "pattern": "^[a-z0-9][a-z0-9._-]+$"
+    },
+    "name": {
+      "type": "string",
+      "title": "Workflow name",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "title": "Semantic version",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "category": {
+      "type": "string",
+      "title": "Workflow category"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "approved",
+        "frozen",
+        "deprecated",
+        "restored"
+      ],
+      "default": "draft",
+      "title": "Version status"
+    },
+    "definition": {
+      "type": "object",
+      "title": "Full workflow definition JSON (triggers, steps, branching, DAG)"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    }
+  },
+  "required": [
+    "workflow_key",
+    "name",
+    "version",
+    "definition"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

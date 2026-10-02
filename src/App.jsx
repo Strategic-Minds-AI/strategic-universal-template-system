@@ -31,6 +31,8 @@ import IndustryPacks from '@/pages/IndustryPacks';
 import UsageBudgets from '@/pages/UsageBudgets';
 import AuditReceipts from '@/pages/AuditReceipts';
 import Settings from '@/pages/Settings';
+import CapabilityRegistry from '@/pages/CapabilityRegistry';
+import ProfileRegistry from '@/pages/ProfileRegistry';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -81,6 +83,8 @@ const AuthenticatedApp = () => {
           <Route path="/usage" element={<UsageBudgets />} />
           <Route path="/audit" element={<AuditReceipts />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/capabilities" element={<CapabilityRegistry />} />
+          <Route path="/registry/:entity" element={<ProfileRegistry />} />
         </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />

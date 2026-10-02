@@ -5,6 +5,7 @@ import {
   LayoutDashboard, FolderKanban, Boxes, Wrench, FileCode2, Terminal,
   Package, ShieldCheck, Hammer, Server, CheckSquare, Plug,
   Brain, MonitorSmartphone, Globe, Gauge, ScrollText, Settings,
+  Layers, Shield, Award, Workflow,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
 import BrandLogo from "./BrandLogo.jsx";
@@ -12,6 +13,7 @@ import BrandLogo from "./BrandLogo.jsx";
 const NAV = [
   { group: "Factory", items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, end: true }, { to: "/projects", label: "Projects", icon: FolderKanban }] },
   { group: "Generators", items: [{ to: "/generators", label: "Generator Library", icon: Boxes }, { to: "/studio", label: "Generator Studio", icon: Wrench }, { to: "/templates", label: "Template Library", icon: FileCode2 }] },
+  { group: "Registries", items: [{ to: "/capabilities", label: "Capability Registry", icon: Layers }, { to: "/registry/PolicyDefinition", label: "Policies", icon: Shield }, { to: "/registry/ValidationProfile", label: "Validation Profiles", icon: ShieldCheck }, { to: "/registry/QualityProfile", label: "Quality Profiles", icon: Award }, { to: "/registry/WorkflowDefinition", label: "Workflows", icon: Workflow }] },
   { group: "Execution", items: [{ to: "/runs", label: "Run Console", icon: Terminal }, { to: "/artifacts", label: "Artifact Explorer", icon: Package }] },
   { group: "Quality", items: [{ to: "/validation", label: "Validation Center", icon: ShieldCheck }, { to: "/repair", label: "Repair Center", icon: Hammer }] },
   { group: "Operations", items: [{ to: "/provisioning", label: "Provisioning Center", icon: Server }, { to: "/approvals", label: "Approvals", icon: CheckSquare }, { to: "/adapters", label: "Adapter Library", icon: Plug }] },

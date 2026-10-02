@@ -1,0 +1,80 @@
+{
+  "name": "ReleaseProfile",
+  "type": "object",
+  "properties": {
+    "profile_key": {
+      "type": "string",
+      "title": "Stable profile key",
+      "pattern": "^[a-z0-9][a-z0-9._-]+$"
+    },
+    "name": {
+      "type": "string",
+      "title": "Profile name",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "title": "Semantic version",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "approved",
+        "frozen",
+        "deprecated",
+        "restored"
+      ],
+      "default": "draft",
+      "title": "Version status"
+    },
+    "definition": {
+      "type": "object",
+      "title": "Full release profile JSON (freeze, export, handoff, rollback)"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    }
+  },
+  "required": [
+    "profile_key",
+    "name",
+    "version",
+    "definition"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
