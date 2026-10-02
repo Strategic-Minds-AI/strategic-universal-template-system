@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { LayoutTemplate, Search, Smartphone, Monitor, Workflow } from "lucide-react";
 import { PREVIEW_STYLES } from "@/lib/gallery/previewStyles.js";
 import { GALLERY_FAMILIES, familyFor } from "@/lib/gallery/previewRenderer.js";
+import { loadConfig, saveConfig, themeToCssVars, DEFAULT_CONFIG } from "@/lib/gallery/studioConfig.js";
 import TemplatePreview from "@/components/gallery/TemplatePreview.jsx";
 import TemplateDetailModal from "@/components/gallery/TemplateDetailModal.jsx";
+import StudioPanel from "@/components/gallery/StudioPanel.jsx";
 
 const TABS = [
   { key: "all", label: "All", icon: LayoutTemplate },
@@ -16,6 +18,11 @@ export default function VisualGallery() {
   const [tab, setTab] = useState("all");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(null);
+  const [config, setConfig] = useState(() => loadConfig());
+
+  useEffect(() => { saveConfig(config); }, [config]);
+
+  const themeVars = useMemo(() => themeToCssVars(config), [config]);
 
   const items = useMemo(() => {
     const all = GALLERY_FAMILIES.flatMap((f) => f.items.map((it) => ({ ...it, _platform: familyFor(it) })));
@@ -38,7 +45,6 @@ export default function VisualGallery() {
     return c;
   }, []);
 
-  // Responsive preview width: smaller cards on narrow viewports.
   const previewW = 232;
 
   return (
@@ -49,11 +55,15 @@ export default function VisualGallery() {
         <div className="xa-icon-chip"><LayoutTemplate className="w-5 h-5" /></div>
         <div>
           <h1 className="text-xl font-black font-heading">Visual Template Gallery</h1>
-          <p className="text-sm text-muted-foreground">Live rendered previews of every desktop, mobile, and recipe template.</p>
+          <p className="text-sm text-muted-foreground">Live rendered previews of every desktop, mobile, and recipe template — fully rethemable.</p>
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 mt-5 mb-5 flex-wrap">
+      <div className="mt-5">
+        <StudioPanel config={config} onChange={setConfig} onReset={() => setConfig({ ...DEFAULT_CONFIG })} />
+      </div>
+
+      <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
         <div className="flex items-center gap-1.5 flex-wrap">
           {TABS.map((t) => {
             const Icon = t.icon;
@@ -82,43 +92,45 @@ export default function VisualGallery() {
         </div>
       </div>
 
-      {items.length === 0 ? (
-        <div className="xa-card xa-card-subtle p-12 text-center">
-          <div className="text-sm font-semibold">No templates match</div>
-          <div className="text-xs text-muted-foreground mt-1">Try a different tab or search term.</div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {items.map((it) => (
-            <button
-              key={it._platform + "-" + it.id}
-              onClick={() => setSelected(it)}
-              className="xa-card overflow-hidden text-left group transition-shadow hover:shadow-lg flex flex-col"
-            >
-              <div className="flex items-center justify-center bg-muted/40 py-5 overflow-hidden">
-                <div className="origin-top transition-transform group-hover:scale-[1.02]">
-                  <TemplatePreview template={it} platform={it._platform} displayW={previewW} />
+      <div style={themeVars}>
+        {items.length === 0 ? (
+          <div className="xa-card xa-card-subtle p-12 text-center">
+            <div className="text-sm font-semibold">No templates match</div>
+            <div className="text-xs text-muted-foreground mt-1">Try a different tab or search term.</div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {items.map((it) => (
+              <button
+                key={it._platform + "-" + it.id}
+                onClick={() => setSelected(it)}
+                className="xa-card overflow-hidden text-left group transition-shadow hover:shadow-lg flex flex-col"
+              >
+                <div className="flex items-center justify-center bg-muted/40 py-5 overflow-hidden">
+                  <div className="origin-top transition-transform group-hover:scale-[1.02]">
+                    <TemplatePreview template={it} platform={it._platform} displayW={previewW} config={config} />
+                  </div>
                 </div>
-              </div>
-              <div className="p-4 border-t border-border">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-bold font-heading truncate">{it.name}</h3>
-                  <span className="xa-pill-badge shrink-0" style={{ fontSize: 9 }}>{it._platform}</span>
+                <div className="p-4 border-t border-border">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-sm font-bold font-heading truncate">{it.name}</h3>
+                    <span className="xa-pill-badge shrink-0" style={{ fontSize: 9 }}>{it._platform}</span>
+                  </div>
+                  <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">
+                    {it.layout_rule || it.canonical_flow || (it.best_for || []).join(" · ")}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-2.5 text-[11px] font-semibold text-[#0d2f96]">
+                    View live preview
+                    <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                  </div>
                 </div>
-                <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">
-                  {it.layout_rule || it.canonical_flow || (it.best_for || []).join(" · ")}
-                </div>
-                <div className="flex items-center gap-1.5 mt-2.5 text-[11px] font-semibold text-[#0d2f96]">
-                  View live preview
-                  <span className="transition-transform group-hover:translate-x-0.5">→</span>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
-      <TemplateDetailModal template={selected} onClose={() => setSelected(null)} />
+      <TemplateDetailModal template={selected} config={config} themeVars={themeVars} onClose={() => setSelected(null)} />
     </div>
   );
 }

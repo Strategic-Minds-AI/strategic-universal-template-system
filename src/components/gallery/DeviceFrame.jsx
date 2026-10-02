@@ -16,7 +16,7 @@ export default function DeviceFrame({ type, designW, designH, displayW, children
 
   if (type === "phone") {
     return (
-      <div style={{ padding: 6, background: "#0d2f96", borderRadius: 20, boxShadow: "0 10px 24px rgba(13,47,150,.22)" }}>
+      <div style={{ padding: 6, background: "var(--brand-secondary)", borderRadius: 20, boxShadow: "0 10px 24px rgba(13,47,150,.22)" }}>
         <div style={{ width: displayW, height: displayH, borderRadius: 14, overflow: "hidden", position: "relative", background: "#fff", border: "1px solid rgba(0,0,0,.12)" }}>
           {screen}
         </div>

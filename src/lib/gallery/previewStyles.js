@@ -12,7 +12,7 @@ export const PREVIEW_STYLES = `
 .vg-flex1{flex:1;min-width:0;min-height:0}
 .vg-scroll{overflow:auto}
 .vg-muted{color:var(--brand-muted-foreground)}
-.vg-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:9999px;background:#e6f0ff;color:#0d2f96;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.vg-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:9999px;background:var(--vg-chip-bg);color:var(--vg-chip-fg);font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
 .vg-chip.soft{background:var(--brand-muted);color:var(--brand-muted-foreground)}
 .vg-card{background:var(--brand-surface);border:1px solid var(--brand-border);border-radius:10px;padding:10px}
 .vg-bar{height:7px;border-radius:9999px;background:var(--brand-muted);overflow:hidden}
@@ -33,7 +33,8 @@ export const PREVIEW_STYLES = `
 .vg-table .h{color:var(--brand-muted-foreground);font-weight:700;border-bottom:1px solid var(--brand-border);text-transform:uppercase;letter-spacing:.04em}
 .vg-table .r{border-bottom:1px solid var(--brand-border)}
 .vg-table .r span:first-child{font-weight:700}
-.vg-table .pill{display:inline-block;padding:2px 7px;border-radius:9999px;font-size:8px;font-weight:700}
+.vg-table .pill{display:inline-block;padding:2px 7px;border-radius:9999px;font-size:8px;font-weight:700;background:var(--vg-chip-bg);color:var(--vg-chip-fg)}
+.vg-table .pill.soft{background:var(--brand-muted);color:var(--brand-muted-foreground)}
 .vg-kpi{display:flex;flex-direction:column;gap:3px;padding:9px;border:1px solid var(--brand-border);border-radius:10px;background:var(--brand-surface)}
 .vg-kpi .v{font-size:15px;font-weight:900;line-height:1}
 .vg-kpi .l{font-size:8px;color:var(--brand-muted-foreground);text-transform:uppercase;letter-spacing:.04em}
@@ -45,7 +46,7 @@ export const PREVIEW_STYLES = `
 .vg-kanban .card{background:var(--brand-surface);border:1px solid var(--brand-border);border-radius:8px;padding:6px}
 .vg-kanban .card .t{font-size:9px;font-weight:700}
 .vg-kanban .card .m{font-size:8px;color:var(--brand-muted-foreground);margin-top:3px}
-.vg-kanban .card .tag{display:inline-block;margin-top:5px;padding:2px 6px;border-radius:9999px;background:#e6f0ff;color:#0d2f96;font-size:7px;font-weight:700}
+.vg-kanban .card .tag{display:inline-block;margin-top:5px;padding:2px 6px;border-radius:9999px;background:var(--vg-chip-bg);color:var(--vg-chip-fg);font-size:7px;font-weight:700}
 .vg-feed .item{display:flex;gap:8px;padding:9px 12px;border-bottom:1px solid var(--brand-border)}
 .vg-feed .thumb{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--brand-gold-light),var(--brand-primary),var(--brand-gold-deep));flex:none}
 .vg-feed .body{flex:1;min-width:0}
@@ -73,7 +74,7 @@ export const PREVIEW_STYLES = `
 .vg-flow .step .t{font-size:11px;font-weight:600}
 .vg-flow .step.on .t{color:var(--brand-primary)}
 .vg-flow .step .arr{color:var(--brand-border);font-size:10px;margin-left:0}
-.vg-media{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;background:linear-gradient(150deg,#0d2f96,var(--brand-primary) 55%,var(--brand-gold-bright))}
+.vg-media{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;background:linear-gradient(150deg,var(--brand-secondary),var(--brand-primary) 55%,var(--brand-gold-bright))}
 .vg-media .progress{height:3px;background:#ffffff3b;border-radius:9999px;overflow:hidden;margin-bottom:10px}
 .vg-media .progress i{display:block;height:100%;width:42%;background:#fff;border-radius:9999px}
 .vg-media .overlay{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}

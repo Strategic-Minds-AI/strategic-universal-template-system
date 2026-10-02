@@ -29,7 +29,7 @@ function List({ label, items }) {
   );
 }
 
-export default function TemplateDetailModal({ template, onClose }) {
+export default function TemplateDetailModal({ template, config, themeVars, onClose }) {
   if (!template) return null;
   const platform = familyFor(template);
   const displayW = platform === "mobile" ? 280 : 620;
@@ -41,8 +41,8 @@ export default function TemplateDetailModal({ template, onClose }) {
         <button onClick={onClose} className="absolute top-3 right-3 z-10 p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground" aria-label="Close">
           <X className="w-5 h-5" />
         </button>
-        <div className="flex-1 flex items-center justify-center p-6 bg-muted/40 overflow-auto">
-          <TemplatePreview template={template} platform={platform} displayW={displayW} />
+        <div className="flex-1 flex items-center justify-center p-6 bg-muted/40 overflow-auto" style={themeVars}>
+          <TemplatePreview template={template} platform={platform} displayW={displayW} config={config} />
         </div>
         <div className="md:w-80 lg:w-96 p-6 overflow-y-auto xa-scroll flex flex-col gap-4 border-t md:border-t-0 md:border-l border-border">
           <div>
