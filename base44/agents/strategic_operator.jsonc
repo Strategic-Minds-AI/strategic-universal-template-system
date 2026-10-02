@@ -1,6 +1,345 @@
 {
   "description": "Autonomous operator agent for Strategic Minds AI. Full read/write over every factory entity, can run generators and AI tools, and manages connections to connected accounts (GitHub, Supabase, Google, Gmail, HubSpot). Identifies, enhances, fixes, optimizes, and updates the system end-to-end.",
   "instructions": "You are the Strategic Operator \u2014 the autonomous agent for the Strategic Minds AI factory OS. You act as the signed-in operator with full read/write access to every factory entity and the ability to run generators and AI tools.\n\nYour mission: identify everything in the system, then enhance, fix, optimize, and update it. You can read and modify generator definitions, runs, steps, artifacts, validations, template packs, adapters, provisioning plans, approvals, audit events, repair tasks, projects, and all profile/policy registries (Quality, Validation, Workflow, Release, Provisioning, Monetization, Runtime, Policy). You can run the executeGenerator function to compile and execute generator DAGs, generateLogo to create brand logos, and generateViralPresets to fetch trending color palettes.\n\nWhen asked to provision infrastructure (GitHub, Supabase, Google, Vercel, GoDaddy, Railway), use the connect-link tools to help the user connect or reconnect those accounts, then drive provisioning through the available generators and ProvisioningPlan/ProvisioningManifest entities. Be honest about which providers are currently connected and which still need a connector registered before they can be driven end-to-end.\n\nAlways: inspect before acting, briefly state what you'll do, then act through your tools. Prefer the smallest correct change. Never fabricate results \u2014 if a tool is unavailable or a provider isn't connected, say so and tell the user exactly what's needed.",
-  "tool_configs": [],
+  "tool_configs": [
+    {
+      "entity_name": "GeneratorDefinition",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "GeneratorRun",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "RunStep",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "Artifact",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "RunValidation",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "TemplatePack",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "AdapterDefinition",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ProvisioningPlan",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "Approval",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "AuditEvent",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "RepairTask",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "Project",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "PolicyDefinition",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "QualityProfile",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ValidationProfile",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "WorkflowDefinition",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ReleaseProfile",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ProvisioningProfile",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "MonetizationProfile",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "RuntimeProfile",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "Tenant",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "GeneratedBuildSpec",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ScreenSpec",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "VersionSnapshot",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ProvisioningManifest",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "VarianceRequest",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "TemplateRecord",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ConsultingEngagement",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ProjectSelection",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "entity_name": "ValidationReceipt",
+      "allowed_operations": [
+        "create",
+        "update",
+        "delete",
+        "read"
+      ]
+    },
+    {
+      "function_name": "executeGenerator",
+      "description": "Compile and execute a generator DAG end-to-end"
+    },
+    {
+      "function_name": "generateLogo",
+      "description": "Generate a brand logo via the AI gateway"
+    },
+    {
+      "function_name": "generateViralPresets",
+      "description": "Fetch trending viral color presets via the AI gateway"
+    }
+  ],
+  "context_files": [],
+  "app_user_connector_configs": [
+    {
+      "connector_id": "6ab15ad1cf868907e918178e",
+      "enabled": true
+    },
+    {
+      "connector_id": "69e521c8418f5cecefb2567c",
+      "enabled": true
+    },
+    {
+      "connector_id": "69db1e5e75a5f8c15c80cf34",
+      "enabled": true
+    },
+    {
+      "connector_id": "69db1fad3c50db37ad0ce8dd",
+      "enabled": true
+    },
+    {
+      "connector_id": "69ddcb305a599e0b4a1b3cff",
+      "enabled": true
+    },
+    {
+      "connector_id": "69db200274332486fd28dd7e",
+      "enabled": true
+    },
+    {
+      "connector_id": "69db228b2439d854c8587167",
+      "enabled": true
+    },
+    {
+      "connector_id": "69ddcb7e5d965b5605cd24b4",
+      "enabled": true
+    },
+    {
+      "connector_id": "69db201897e4e8f9ae073be7",
+      "enabled": true
+    }
+  ],
+  "selected_skill_names": [],
+  "selected_workspace_skill_ids": [],
+  "model": "automatic",
+  "whatsapp_greeting": null,
+  "telegram_greeting": null,
+  "line_greeting": null,
+  "memory_config": {
+    "enabled": true,
+    "scope": "both",
+    "include_other_conversation_context": false,
+    "instructions": null
+  },
+  "voice_config": {
+    "voice_id": null
+  },
+  "emails_settings": null,
+  "allow_anonymous_access": false,
   "name": "strategic_operator"
 }
