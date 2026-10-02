@@ -1,0 +1,54 @@
+{
+  "description": "Daily at noon ET, logs a midday health pulse across all factory subsystems.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 12 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_midday_pulse",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_pulse": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "midday_health_pulse",
+              "entity_type": "System",
+              "entity_id": "factory",
+              "severity": "info",
+              "workflow_name": "Daily Midday Health Pulse",
+              "payload": {
+                "pulse": "all_subsystems"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log midday pulse",
+            "description": "Daily noon health pulse"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Midday Health Pulse"
+}

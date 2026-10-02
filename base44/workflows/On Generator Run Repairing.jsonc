@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Run Repairing",
+  "description": "When a GeneratorRun transitions to REPAIRING status, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorRun",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"REPAIRING\" and .trigger.old_data.status != \"REPAIRING\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_run_repairing",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_repairing": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_run_repairing",
+              "entity_type": "GeneratorRun",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Generator Run Repairing",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repairing",
+            "description": "Audit on run repairing"
+          }
+        }
+      }
+    ]
+  }
+}

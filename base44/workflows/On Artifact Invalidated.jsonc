@@ -1,0 +1,48 @@
+{
+  "name": "On Artifact Invalidated",
+  "description": "When an Artifact transitions to invalid validation state, logs an error audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Artifact",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.validation_state == \"invalid\" and .trigger.old_data.validation_state != \"invalid\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_artifact_invalidated",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_invalidated": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "artifact_invalidated",
+              "entity_type": "Artifact",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "error",
+              "workflow_name": "On Artifact Invalidated",
+              "payload": {
+                "name": "${ .trigger.data.name }",
+                "sha256": "${ .trigger.data.sha256 }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log artifact invalidated",
+            "description": "Error audit on artifact invalidated"
+          }
+        }
+      }
+    ]
+  }
+}

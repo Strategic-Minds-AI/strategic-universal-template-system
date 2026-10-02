@@ -1,0 +1,54 @@
+{
+  "description": "Daily at 11pm ET, runs a security scan checkpoint across artifacts and adapters and logs results.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 23 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_late_night_security",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_scan": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "late_night_security_scan",
+              "entity_type": "System",
+              "entity_id": "factory",
+              "severity": "info",
+              "workflow_name": "Daily Late Night Security Scan",
+              "payload": {
+                "scan": "artifacts_and_adapters"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log security scan",
+            "description": "Daily 11pm security scan"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Late Night Security Scan"
+}

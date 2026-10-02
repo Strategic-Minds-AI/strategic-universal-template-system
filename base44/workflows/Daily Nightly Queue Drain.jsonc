@@ -1,0 +1,54 @@
+{
+  "description": "Daily at 8pm ET, checks for remaining queued runs and logs a drain summary.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 20 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_nightly_queue_drain",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_drain": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "nightly_queue_drain",
+              "entity_type": "GeneratorRun",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Daily Nightly Queue Drain",
+              "payload": {
+                "check": "queued_runs"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log queue drain",
+            "description": "Daily 8pm queue drain check"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Nightly Queue Drain"
+}

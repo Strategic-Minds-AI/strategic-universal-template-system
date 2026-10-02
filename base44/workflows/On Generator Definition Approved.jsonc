@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Definition Approved",
+  "description": "When a GeneratorDefinition transitions to approved status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"approved\" and .trigger.old_data.status != \"approved\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_approved",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_approved": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_approved",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Approved",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log approved",
+            "description": "Audit on definition approved"
+          }
+        }
+      }
+    ]
+  }
+}

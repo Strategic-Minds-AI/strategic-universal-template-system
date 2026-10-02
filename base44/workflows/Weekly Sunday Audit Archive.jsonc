@@ -1,0 +1,54 @@
+{
+  "description": "Every Sunday at 3am ET, archives old audit events and logs a archival checkpoint.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 3 * * 0",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_sunday_audit_archive",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_archive": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "weekly_audit_archive",
+              "entity_type": "AuditEvent",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Weekly Sunday Audit Archive",
+              "payload": {
+                "archive": "events_older_than_30_days"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log audit archive",
+            "description": "Weekly Sunday audit archive"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Weekly Sunday Audit Archive"
+}

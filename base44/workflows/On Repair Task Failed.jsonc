@@ -1,0 +1,49 @@
+{
+  "name": "On Repair Task Failed",
+  "description": "When a RepairTask transitions to failed status, logs an error audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RepairTask",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"failed\" and .trigger.old_data.status != \"failed\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_repair_failed",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_failed": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "repair_task_failed",
+              "entity_type": "RepairTask",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "error",
+              "workflow_name": "On Repair Task Failed",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "target_step_key": "${ .trigger.data.target_step_key }",
+                "attempt": "${ .trigger.data.attempt }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repair failed",
+            "description": "Error audit on repair failed"
+          }
+        }
+      }
+    ]
+  }
+}

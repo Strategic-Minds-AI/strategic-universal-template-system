@@ -1,0 +1,48 @@
+{
+  "name": "On Artifact Validated",
+  "description": "When an Artifact transitions to valid validation state, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Artifact",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.validation_state == \"valid\" and .trigger.old_data.validation_state != \"valid\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_artifact_validated",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_validated": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "artifact_validated",
+              "entity_type": "Artifact",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Artifact Validated",
+              "payload": {
+                "name": "${ .trigger.data.name }",
+                "sha256": "${ .trigger.data.sha256 }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log artifact validated",
+            "description": "Audit on artifact validated"
+          }
+        }
+      }
+    ]
+  }
+}

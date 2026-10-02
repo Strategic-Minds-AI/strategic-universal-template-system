@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Definition Validated",
+  "description": "When a GeneratorDefinition transitions to validated status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"validated\" and .trigger.old_data.status != \"validated\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_validated",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_validated": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_validated",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Validated",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log validated",
+            "description": "Audit on definition validated"
+          }
+        }
+      }
+    ]
+  }
+}

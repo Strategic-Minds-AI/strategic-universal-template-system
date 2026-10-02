@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Run Cancelled",
+  "description": "When a GeneratorRun transitions to CANCELLED status, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorRun",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"CANCELLED\" and .trigger.old_data.status != \"CANCELLED\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_run_cancelled",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_cancelled": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_run_cancelled",
+              "entity_type": "GeneratorRun",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Generator Run Cancelled",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log cancelled",
+            "description": "Audit on run cancelled"
+          }
+        }
+      }
+    ]
+  }
+}

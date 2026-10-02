@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Definition Deprecated",
+  "description": "When a GeneratorDefinition transitions to deprecated status, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"deprecated\" and .trigger.old_data.status != \"deprecated\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_deprecated",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_deprecated": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_deprecated",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Generator Definition Deprecated",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log deprecated",
+            "description": "Audit on definition deprecated"
+          }
+        }
+      }
+    ]
+  }
+}

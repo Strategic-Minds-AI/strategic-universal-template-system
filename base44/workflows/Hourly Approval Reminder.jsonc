@@ -1,0 +1,55 @@
+{
+  "description": "Every hour, checks for pending approvals older than 1 hour and logs a reminder.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "15 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hourly_approval_reminder",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_reminder": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "hourly_approval_reminder",
+              "entity_type": "Approval",
+              "entity_id": "system",
+              "severity": "warn",
+              "workflow_name": "Hourly Approval Reminder",
+              "payload": {
+                "check": "pending_approvals",
+                "max_age_hours": 1
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log approval reminder",
+            "description": "Hourly pending approval check"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Hourly Approval Reminder"
+}

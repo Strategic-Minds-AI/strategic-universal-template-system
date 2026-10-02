@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Run Exported",
+  "description": "When a GeneratorRun transitions to EXPORTED status, logs an audit event marking final delivery.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorRun",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"EXPORTED\" and .trigger.old_data.status != \"EXPORTED\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_run_exported",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_exported": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_run_exported",
+              "entity_type": "GeneratorRun",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Run Exported",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log exported",
+            "description": "Audit on run exported"
+          }
+        }
+      }
+    ]
+  }
+}

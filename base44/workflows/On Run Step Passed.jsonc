@@ -1,0 +1,48 @@
+{
+  "name": "On Run Step Passed",
+  "description": "When a RunStep transitions to passed status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunStep",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"passed\" and .trigger.old_data.status != \"passed\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_run_step_passed",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_passed": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "run_step_passed",
+              "entity_type": "RunStep",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Run Step Passed",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "step_key": "${ .trigger.data.step_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log step passed",
+            "description": "Audit on step passed"
+          }
+        }
+      }
+    ]
+  }
+}

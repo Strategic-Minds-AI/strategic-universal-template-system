@@ -1,0 +1,50 @@
+{
+  "name": "On Approval Rejected",
+  "description": "When an Approval transitions to rejected status, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Approval",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"rejected\" and .trigger.old_data.status != \"rejected\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_approval_rejected",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_rejected": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "approval_rejected",
+              "entity_type": "Approval",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Approval Rejected",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "action_key": "${ .trigger.data.action_key }",
+                "resolved_by_id": "${ .trigger.data.resolved_by_id }",
+                "reason": "${ .trigger.data.reason }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log approval rejected",
+            "description": "Warning audit on approval rejected"
+          }
+        }
+      }
+    ]
+  }
+}

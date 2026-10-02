@@ -1,0 +1,54 @@
+{
+  "description": "Every Wednesday at 9am ET, audits all adapter configurations and logs health and config status.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 3",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_wednesday_adapter_audit",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_audit": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "weekly_adapter_audit",
+              "entity_type": "AdapterDefinition",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Weekly Wednesday Adapter Audit",
+              "payload": {
+                "audit": "all_adapters"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log adapter audit",
+            "description": "Weekly Wednesday adapter audit"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Weekly Wednesday Adapter Audit"
+}

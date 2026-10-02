@@ -1,0 +1,48 @@
+{
+  "name": "On Artifact Dependency Added",
+  "description": "When an Artifact dependencies array is updated, logs a dependency change audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Artifact",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_artifact_dependency_added",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_dependency": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "artifact_dependency_added",
+              "entity_type": "Artifact",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Artifact Dependency Added",
+              "payload": {
+                "name": "${ .trigger.data.name }",
+                "dependencies": "${ .trigger.data.dependencies }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log dependency added",
+            "description": "Audit on dependency change"
+          }
+        }
+      }
+    ]
+  }
+}

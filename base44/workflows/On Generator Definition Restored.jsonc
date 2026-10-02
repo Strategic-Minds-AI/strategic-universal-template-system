@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Definition Restored",
+  "description": "When a GeneratorDefinition transitions to restored status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"restored\" and .trigger.old_data.status != \"restored\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_restored",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_restored": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_restored",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Restored",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log restored",
+            "description": "Audit on definition restored"
+          }
+        }
+      }
+    ]
+  }
+}

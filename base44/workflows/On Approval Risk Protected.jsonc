@@ -1,0 +1,49 @@
+{
+  "name": "On Approval Risk Protected",
+  "description": "When an Approval with PROTECTED risk class is created, logs a critical audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Approval",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ .trigger.data.risk_class == \"PROTECTED\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_approval_risk_protected",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_protected": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "approval_risk_protected",
+              "entity_type": "Approval",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "critical",
+              "workflow_name": "On Approval Risk Protected",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "action_key": "${ .trigger.data.action_key }",
+                "risk_class": "${ .trigger.data.risk_class }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log protected approval",
+            "description": "Critical audit on protected risk approval"
+          }
+        }
+      }
+    ]
+  }
+}

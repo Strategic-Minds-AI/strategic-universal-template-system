@@ -1,0 +1,48 @@
+{
+  "name": "On Repair Task Cancelled",
+  "description": "When a RepairTask transitions to cancelled status, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RepairTask",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"cancelled\" and .trigger.old_data.status != \"cancelled\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_repair_cancelled",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_cancelled": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "repair_task_cancelled",
+              "entity_type": "RepairTask",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Repair Task Cancelled",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "target_step_key": "${ .trigger.data.target_step_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repair cancelled",
+            "description": "Audit on repair cancelled"
+          }
+        }
+      }
+    ]
+  }
+}

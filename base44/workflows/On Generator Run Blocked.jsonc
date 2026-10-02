@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Run Blocked",
+  "description": "When a GeneratorRun transitions to BLOCKED status, logs a critical audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorRun",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"BLOCKED\" and .trigger.old_data.status != \"BLOCKED\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_run_blocked",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_blocked": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_run_blocked",
+              "entity_type": "GeneratorRun",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "critical",
+              "workflow_name": "On Generator Run Blocked",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log blocked",
+            "description": "Critical audit on run blocked"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "description": "Daily at 10am ET, generates an aging report for pending approvals and logs it.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 10 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_approval_aging",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_aging": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "approval_aging_report",
+              "entity_type": "Approval",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Daily Approval Aging Report",
+              "payload": {
+                "report": "aging_summary"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log aging report",
+            "description": "Daily approval aging report"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Approval Aging Report"
+}

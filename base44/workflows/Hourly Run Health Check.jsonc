@@ -1,0 +1,55 @@
+{
+  "description": "Every hour, checks for stuck or long-running generator runs and logs a warning if any are found.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hourly_run_health_check",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_check": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "hourly_run_health_check",
+              "entity_type": "GeneratorRun",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Hourly Run Health Check",
+              "payload": {
+                "check": "stuck_runs",
+                "window_hours": 1
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log health check",
+            "description": "Hourly stuck-run detection"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Hourly Run Health Check"
+}

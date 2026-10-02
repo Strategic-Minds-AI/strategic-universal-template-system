@@ -1,0 +1,48 @@
+{
+  "name": "On Artifact Blocked",
+  "description": "When an Artifact transitions to blocked validation state, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Artifact",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.validation_state == \"blocked\" and .trigger.old_data.validation_state != \"blocked\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_artifact_blocked",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_blocked": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "artifact_blocked",
+              "entity_type": "Artifact",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Artifact Blocked",
+              "payload": {
+                "name": "${ .trigger.data.name }",
+                "sha256": "${ .trigger.data.sha256 }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log artifact blocked",
+            "description": "Warning audit on artifact blocked"
+          }
+        }
+      }
+    ]
+  }
+}

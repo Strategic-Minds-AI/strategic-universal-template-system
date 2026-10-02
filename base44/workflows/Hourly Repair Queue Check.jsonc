@@ -1,0 +1,54 @@
+{
+  "description": "Every hour, scans the repair task queue for open items and logs a summary.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "45 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hourly_repair_queue_check",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_queue": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "hourly_repair_queue_check",
+              "entity_type": "RepairTask",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Hourly Repair Queue Check",
+              "payload": {
+                "check": "open_repair_tasks"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repair queue",
+            "description": "Hourly repair queue scan"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Hourly Repair Queue Check"
+}

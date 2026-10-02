@@ -1,0 +1,48 @@
+{
+  "name": "On Validation Pass",
+  "description": "When a RunValidation transitions to PASS status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunValidation",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"PASS\" and .trigger.old_data.status != \"PASS\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_validation_pass",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_pass": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "validation_pass",
+              "entity_type": "RunValidation",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Validation Pass",
+              "payload": {
+                "validator_layer": "${ .trigger.data.validator_layer }",
+                "validator_id": "${ .trigger.data.validator_id }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log validation pass",
+            "description": "Audit on validation pass"
+          }
+        }
+      }
+    ]
+  }
+}

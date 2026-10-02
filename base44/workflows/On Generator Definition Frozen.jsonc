@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Definition Frozen",
+  "description": "When a GeneratorDefinition transitions to frozen status, logs a critical audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"frozen\" and .trigger.old_data.status != \"frozen\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_frozen",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_frozen": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_frozen",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Frozen",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log frozen",
+            "description": "Audit on definition frozen"
+          }
+        }
+      }
+    ]
+  }
+}

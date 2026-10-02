@@ -1,0 +1,49 @@
+{
+  "name": "On Generator Definition Status Change",
+  "description": "When any GeneratorDefinition status field changes, logs a generic status transition audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status != .trigger.old_data.status }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_status_change",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_change": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_status_change",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Status Change",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "old_status": "${ .trigger.old_data.status }",
+                "new_status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log status change",
+            "description": "Audit on any status transition"
+          }
+        }
+      }
+    ]
+  }
+}

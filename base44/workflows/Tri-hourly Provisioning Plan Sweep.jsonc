@@ -1,0 +1,55 @@
+{
+  "description": "Every 3 hours, sweeps provisioning plans for stale drafts and logs a summary.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "15 */3 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "trihourly_provisioning_sweep",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_sweep": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "provisioning_plan_sweep",
+              "entity_type": "ProvisioningPlan",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Tri-hourly Provisioning Plan Sweep",
+              "payload": {
+                "check": "stale_drafts",
+                "max_age_hours": 72
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log plan sweep",
+            "description": "Tri-hourly provisioning sweep"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Tri-hourly Provisioning Plan Sweep"
+}

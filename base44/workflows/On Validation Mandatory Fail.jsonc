@@ -1,0 +1,49 @@
+{
+  "name": "On Validation Mandatory Fail",
+  "description": "When a mandatory RunValidation transitions to FAIL status, logs a critical audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunValidation",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"FAIL\" and .trigger.old_data.status != \"FAIL\" and .trigger.data.mandatory == true }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_validation_mandatory_fail",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_mandatory_fail": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "validation_mandatory_fail",
+              "entity_type": "RunValidation",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "critical",
+              "workflow_name": "On Validation Mandatory Fail",
+              "payload": {
+                "validator_layer": "${ .trigger.data.validator_layer }",
+                "validator_id": "${ .trigger.data.validator_id }",
+                "failures": "${ .trigger.data.failures }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log mandatory fail",
+            "description": "Critical audit on mandatory validation failure"
+          }
+        }
+      }
+    ]
+  }
+}

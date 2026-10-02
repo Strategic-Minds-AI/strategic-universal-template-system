@@ -1,0 +1,48 @@
+{
+  "name": "On Validation Layer Security",
+  "description": "When a RunValidation with security layer is created, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunValidation",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ .trigger.data.validator_layer == \"security\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_validation_layer_security",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_security": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "validation_layer_security",
+              "entity_type": "RunValidation",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Validation Layer Security",
+              "payload": {
+                "validator_id": "${ .trigger.data.validator_id }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log security validation",
+            "description": "Audit on security layer validation"
+          }
+        }
+      }
+    ]
+  }
+}

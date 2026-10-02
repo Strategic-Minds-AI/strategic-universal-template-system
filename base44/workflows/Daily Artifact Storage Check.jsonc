@@ -1,0 +1,54 @@
+{
+  "description": "Daily at 2pm ET, checks artifact storage usage and logs a capacity summary.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 14 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_artifact_storage",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_storage": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "artifact_storage_check",
+              "entity_type": "Artifact",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Daily Artifact Storage Check",
+              "payload": {
+                "check": "storage_capacity"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log storage check",
+            "description": "Daily artifact storage check"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Artifact Storage Check"
+}

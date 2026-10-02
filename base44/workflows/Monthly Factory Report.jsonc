@@ -1,0 +1,52 @@
+{
+  "description": "On the 1st of each month at 8am ET, generates a comprehensive monthly factory report and logs it.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 1 * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "monthly_factory_report",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_report": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "monthly_factory_report",
+              "entity_type": "System",
+              "entity_id": "factory",
+              "severity": "info",
+              "workflow_name": "Monthly Factory Report",
+              "draft_summary": "Generate a comprehensive monthly factory report for Strategic Minds AI. Cover: 1) total runs executed and pass rate, 2) artifacts generated and storage used, 3) validations passed/failed, 4) provisioning plans completed, 5) approvals processed, 6) repairs resolved, 7) key trends and recommendations for next month. Keep under 300 words."
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log monthly report",
+            "description": "Monthly 1st factory report"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Monthly Factory Report"
+}

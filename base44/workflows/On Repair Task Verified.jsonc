@@ -1,0 +1,48 @@
+{
+  "name": "On Repair Task Verified",
+  "description": "When a RepairTask transitions to verified status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RepairTask",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"verified\" and .trigger.old_data.status != \"verified\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_repair_verified",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_verified": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "repair_task_verified",
+              "entity_type": "RepairTask",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Repair Task Verified",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "target_step_key": "${ .trigger.data.target_step_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repair verified",
+            "description": "Audit on repair verified"
+          }
+        }
+      }
+    ]
+  }
+}

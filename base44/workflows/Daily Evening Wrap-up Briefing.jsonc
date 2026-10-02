@@ -1,0 +1,52 @@
+{
+  "description": "Daily at 6pm ET, generates an AI-powered evening wrap-up briefing and logs it.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 18 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_evening_wrapup",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_wrapup": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "evening_wrapup_briefing",
+              "entity_type": "System",
+              "entity_id": "factory",
+              "severity": "info",
+              "workflow_name": "Daily Evening Wrap-up Briefing",
+              "draft_summary": "Generate a concise 3-bullet evening wrap-up for the Strategic Minds AI factory operator. Cover: 1) what was accomplished today (runs passed, artifacts generated), 2) what needs attention tomorrow (pending approvals, open repairs), 3) a closing motivational one-liner. Keep under 150 words."
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log wrap-up",
+            "description": "Daily 6pm AI evening briefing"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Evening Wrap-up Briefing"
+}

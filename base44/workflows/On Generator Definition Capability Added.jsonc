@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Definition Capability Added",
+  "description": "When a GeneratorDefinition capabilities array grows, logs a capability addition audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_capability_added",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_capability": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_capability_added",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Capability Added",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "capabilities": "${ .trigger.data.capabilities }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log capability added",
+            "description": "Audit on capability array growth"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "description": "Every 6 hours, identifies run steps stuck in running status and logs an alert.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 */6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "six_hour_stuck_step",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_stuck": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "stuck_step_check",
+              "entity_type": "RunStep",
+              "entity_id": "system",
+              "severity": "warn",
+              "workflow_name": "Six-hour Stuck Step Check",
+              "payload": {
+                "check": "stuck_steps",
+                "max_duration_hours": 6
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log stuck steps",
+            "description": "6-hour stuck step detection"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Six-hour Stuck Step Check"
+}

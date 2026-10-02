@@ -1,0 +1,54 @@
+{
+  "description": "Every 2 hours, polls adapter health states and logs degraded or unhealthy adapters.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 */2 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "bihourly_adapter_health_poll",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_poll": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "adapter_health_poll",
+              "entity_type": "AdapterDefinition",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Bi-hourly Adapter Health Poll",
+              "payload": {
+                "check": "adapter_health"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log adapter poll",
+            "description": "Bi-hourly adapter health poll"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Bi-hourly Adapter Health Poll"
+}

@@ -1,0 +1,55 @@
+{
+  "description": "Every 2 hours, checks for validation receipts that are stale and logs a warning.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */2 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "bihourly_validation_staleness",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_staleness": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "validation_staleness_check",
+              "entity_type": "RunValidation",
+              "entity_id": "system",
+              "severity": "warn",
+              "workflow_name": "Bi-hourly Validation Staleness Check",
+              "payload": {
+                "check": "stale_validations",
+                "max_age_hours": 24
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log staleness",
+            "description": "Bi-hourly validation staleness"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Bi-hourly Validation Staleness Check"
+}

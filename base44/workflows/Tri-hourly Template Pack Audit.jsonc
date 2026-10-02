@@ -1,0 +1,54 @@
+{
+  "description": "Every 3 hours, audits template pack statuses and logs any deprecated or draft packs needing review.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */3 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "trihourly_template_pack_audit",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_audit": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "template_pack_audit",
+              "entity_type": "TemplatePack",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Tri-hourly Template Pack Audit",
+              "payload": {
+                "check": "pack_statuses"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log pack audit",
+            "description": "Tri-hourly template pack audit"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Tri-hourly Template Pack Audit"
+}

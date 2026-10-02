@@ -1,0 +1,48 @@
+{
+  "name": "On Repair Task In Progress",
+  "description": "When a RepairTask transitions to in_progress status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RepairTask",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"in_progress\" and .trigger.old_data.status != \"in_progress\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_repair_in_progress",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_in_progress": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "repair_task_in_progress",
+              "entity_type": "RepairTask",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Repair Task In Progress",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "target_step_key": "${ .trigger.data.target_step_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repair in progress",
+            "description": "Audit on repair started"
+          }
+        }
+      }
+    ]
+  }
+}

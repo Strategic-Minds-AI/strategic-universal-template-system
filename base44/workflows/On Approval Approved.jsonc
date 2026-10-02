@@ -1,0 +1,49 @@
+{
+  "name": "On Approval Approved",
+  "description": "When an Approval transitions to approved status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Approval",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"approved\" and .trigger.old_data.status != \"approved\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_approval_approved",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_approved": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "approval_approved",
+              "entity_type": "Approval",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Approval Approved",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "action_key": "${ .trigger.data.action_key }",
+                "resolved_by_id": "${ .trigger.data.resolved_by_id }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log approval approved",
+            "description": "Audit on approval granted"
+          }
+        }
+      }
+    ]
+  }
+}

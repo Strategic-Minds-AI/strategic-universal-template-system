@@ -1,0 +1,49 @@
+{
+  "name": "On Generator Definition Version Bump",
+  "description": "When a GeneratorDefinition version field changes, logs a version bump audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.version != .trigger.old_data.version }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_version_bump",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_bump": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_version_bump",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Definition Version Bump",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "old_version": "${ .trigger.old_data.version }",
+                "new_version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log version bump",
+            "description": "Audit on version change"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "On Run Step Dead Letter",
+  "description": "When a RunStep transitions to dead_letter status, logs a critical audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunStep",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"dead_letter\" and .trigger.old_data.status != \"dead_letter\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_run_step_dead_letter",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_dead_letter": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "run_step_dead_letter",
+              "entity_type": "RunStep",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "critical",
+              "workflow_name": "On Run Step Dead Letter",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "step_key": "${ .trigger.data.step_key }",
+                "attempt_count": "${ .trigger.data.attempt_count }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log dead letter",
+            "description": "Critical audit on dead-letter step"
+          }
+        }
+      }
+    ]
+  }
+}

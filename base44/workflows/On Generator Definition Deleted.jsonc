@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Definition Deleted",
+  "description": "When a GeneratorDefinition is deleted, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorDefinition",
+      "events": [
+        "delete"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_definition_deleted",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_deleted": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_definition_deleted",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Generator Definition Deleted",
+              "payload": {
+                "generator_key": "${ .trigger.old_data.generator_key }",
+                "version": "${ .trigger.old_data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log deleted",
+            "description": "Audit on definition deleted"
+          }
+        }
+      }
+    ]
+  }
+}

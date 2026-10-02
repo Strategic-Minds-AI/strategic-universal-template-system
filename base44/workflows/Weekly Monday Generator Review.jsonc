@@ -1,0 +1,54 @@
+{
+  "description": "Every Monday at 9am ET, reviews all generator definitions and logs a weekly summary.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 1",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_monday_generator_review",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_review": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "weekly_generator_review",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Weekly Monday Generator Review",
+              "payload": {
+                "review": "all_generators"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log generator review",
+            "description": "Weekly Monday generator review"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Weekly Monday Generator Review"
+}

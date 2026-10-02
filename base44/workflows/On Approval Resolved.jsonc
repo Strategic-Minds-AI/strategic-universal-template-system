@@ -1,0 +1,50 @@
+{
+  "name": "On Approval Resolved",
+  "description": "When an Approval gets a resolved_by_id set, logs an audit event tracking who resolved it.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Approval",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.resolved_by_id != null and .trigger.old_data.resolved_by_id == null }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_approval_resolved",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_resolved": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "approval_resolved",
+              "entity_type": "Approval",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Approval Resolved",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "action_key": "${ .trigger.data.action_key }",
+                "resolved_by_id": "${ .trigger.data.resolved_by_id }",
+                "resolved_at": "${ .trigger.data.resolved_at }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log approval resolved",
+            "description": "Audit on approval resolution"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "description": "Every Thursday at 9am ET, compiles a weekly validation report and logs pass/fail trends.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 4",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_thursday_validation_report",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_report": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "weekly_validation_report",
+              "entity_type": "RunValidation",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Weekly Thursday Validation Report",
+              "payload": {
+                "report": "weekly_pass_fail_trends"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log validation report",
+            "description": "Weekly Thursday validation report"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Weekly Thursday Validation Report"
+}

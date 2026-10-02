@@ -1,0 +1,54 @@
+{
+  "description": "Every Friday at 9am ET, reviews provisioning plans from the week and logs a summary.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 5",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_friday_provisioning_review",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_review": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "weekly_provisioning_review",
+              "entity_type": "ProvisioningPlan",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Weekly Friday Provisioning Review",
+              "payload": {
+                "review": "weekly_plans"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log provisioning review",
+            "description": "Weekly Friday provisioning review"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Weekly Friday Provisioning Review"
+}

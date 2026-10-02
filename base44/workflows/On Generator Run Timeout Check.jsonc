@@ -1,0 +1,49 @@
+{
+  "name": "On Generator Run Timeout Check",
+  "description": "When a GeneratorRun is updated and has been running too long, logs a timeout warning.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorRun",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"RUNNING\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_run_timeout",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_timeout": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_run_timeout_check",
+              "entity_type": "GeneratorRun",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Generator Run Timeout Check",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "started_at": "${ .trigger.data.started_at }",
+                "check": "duration_exceeded"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log timeout check",
+            "description": "Timeout warning on long-running run"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "On Generator Run Created",
+  "description": "When a new GeneratorRun is created, logs an audit event tracking the run initialization.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "GeneratorRun",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_generator_run_created",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_created": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_run_created",
+              "entity_type": "GeneratorRun",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Generator Run Created",
+              "payload": {
+                "generator_key": "${ .trigger.data.generator_key }",
+                "generator_version": "${ .trigger.data.generator_version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log run created",
+            "description": "Audit on run creation"
+          }
+        }
+      }
+    ]
+  }
+}

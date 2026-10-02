@@ -1,0 +1,49 @@
+{
+  "name": "On Run Step Created",
+  "description": "When a new RunStep is created, logs an audit event tracking step initialization.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunStep",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_run_step_created",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_created": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "run_step_created",
+              "entity_type": "RunStep",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Run Step Created",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "step_key": "${ .trigger.data.step_key }",
+                "step_type": "${ .trigger.data.step_type }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log step created",
+            "description": "Audit on step creation"
+          }
+        }
+      }
+    ]
+  }
+}

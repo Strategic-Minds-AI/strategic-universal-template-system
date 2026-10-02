@@ -1,0 +1,49 @@
+{
+  "name": "On Repair Task Applied",
+  "description": "When a RepairTask transitions to applied status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RepairTask",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"applied\" and .trigger.old_data.status != \"applied\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_repair_applied",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_applied": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "repair_task_applied",
+              "entity_type": "RepairTask",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Repair Task Applied",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "target_step_key": "${ .trigger.data.target_step_key }",
+                "attempt": "${ .trigger.data.attempt }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log repair applied",
+            "description": "Audit on repair applied"
+          }
+        }
+      }
+    ]
+  }
+}

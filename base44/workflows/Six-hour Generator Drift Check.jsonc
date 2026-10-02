@@ -1,0 +1,54 @@
+{
+  "description": "Every 6 hours, checks generator definitions for version drift and logs discrepancies.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "six_hour_generator_drift",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_drift": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "generator_drift_check",
+              "entity_type": "GeneratorDefinition",
+              "entity_id": "system",
+              "severity": "warn",
+              "workflow_name": "Six-hour Generator Drift Check",
+              "payload": {
+                "check": "version_drift"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log drift",
+            "description": "6-hour generator drift check"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Six-hour Generator Drift Check"
+}

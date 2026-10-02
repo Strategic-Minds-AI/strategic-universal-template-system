@@ -1,0 +1,48 @@
+{
+  "name": "On Run Step Blocked",
+  "description": "When a RunStep transitions to blocked status, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunStep",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"blocked\" and .trigger.old_data.status != \"blocked\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_run_step_blocked",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_blocked": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "run_step_blocked",
+              "entity_type": "RunStep",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Run Step Blocked",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "step_key": "${ .trigger.data.step_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log step blocked",
+            "description": "Warning audit on step blocked"
+          }
+        }
+      }
+    ]
+  }
+}

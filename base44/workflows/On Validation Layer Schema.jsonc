@@ -1,0 +1,48 @@
+{
+  "name": "On Validation Layer Schema",
+  "description": "When a RunValidation with schema layer is created, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunValidation",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ .trigger.data.validator_layer == \"schema\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_validation_layer_schema",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_schema": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "validation_layer_schema",
+              "entity_type": "RunValidation",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Validation Layer Schema",
+              "payload": {
+                "validator_id": "${ .trigger.data.validator_id }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log schema validation",
+            "description": "Audit on schema layer validation"
+          }
+        }
+      }
+    ]
+  }
+}

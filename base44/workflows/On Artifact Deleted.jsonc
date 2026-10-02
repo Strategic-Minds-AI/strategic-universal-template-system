@@ -1,0 +1,48 @@
+{
+  "name": "On Artifact Deleted",
+  "description": "When an Artifact is deleted, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "Artifact",
+      "events": [
+        "delete"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_artifact_deleted",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_deleted": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "artifact_deleted",
+              "entity_type": "Artifact",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Artifact Deleted",
+              "payload": {
+                "name": "${ .trigger.old_data.name }",
+                "sha256": "${ .trigger.old_data.sha256 }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log artifact deleted",
+            "description": "Audit on artifact deletion"
+          }
+        }
+      }
+    ]
+  }
+}

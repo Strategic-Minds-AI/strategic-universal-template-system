@@ -1,0 +1,48 @@
+{
+  "name": "On Run Step Running",
+  "description": "When a RunStep transitions to running status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RunStep",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"running\" and .trigger.old_data.status != \"running\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_run_step_running",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_running": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "run_step_running",
+              "entity_type": "RunStep",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Run Step Running",
+              "payload": {
+                "run_id": "${ .trigger.data.run_id }",
+                "step_key": "${ .trigger.data.step_key }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log step running",
+            "description": "Audit on step started"
+          }
+        }
+      }
+    ]
+  }
+}

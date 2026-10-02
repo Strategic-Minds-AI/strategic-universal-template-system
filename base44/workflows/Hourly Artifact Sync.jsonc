@@ -1,0 +1,54 @@
+{
+  "description": "Every hour, logs an artifact synchronization pulse for storage tracking.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "30 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hourly_artifact_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_sync": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "hourly_artifact_sync",
+              "entity_type": "Artifact",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Hourly Artifact Sync",
+              "payload": {
+                "sync": "artifact_storage_pulse"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log artifact sync",
+            "description": "Hourly artifact storage pulse"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Hourly Artifact Sync"
+}

@@ -1,0 +1,54 @@
+{
+  "description": "Daily at 4pm ET, generates a backlog report for pending validations and logs it.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 16 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_validation_backlog",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_backlog": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "validation_backlog_report",
+              "entity_type": "RunValidation",
+              "entity_id": "system",
+              "severity": "info",
+              "workflow_name": "Daily Validation Backlog Report",
+              "payload": {
+                "report": "pending_validations"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log backlog",
+            "description": "Daily validation backlog report"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Daily Validation Backlog Report"
+}
