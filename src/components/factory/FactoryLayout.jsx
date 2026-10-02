@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
@@ -6,7 +6,7 @@ import {
   Package, ShieldCheck, Hammer, Server, CheckSquare, Plug,
   Brain, MonitorSmartphone, Globe, Gauge, ScrollText, Settings,
   Layers, Shield, Award, Workflow,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, Menu, X,
 } from "lucide-react";
 import BrandLogo from "./BrandLogo.jsx";
 
@@ -23,14 +23,32 @@ const NAV = [
 
 export default function FactoryLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const loc = useLocation();
+
+  // Close the mobile drawer whenever the route changes
+  useEffect(() => { setMobileOpen(false); }, [loc.pathname]);
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      <aside className={`shrink-0 border-r border-border bg-background flex flex-col transition-all ${collapsed ? "w-16" : "w-60"}`}>
-        <div className="h-14 flex items-center px-3 border-b border-border">
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <div className="fixed inset-0 bg-black/40 z-40 md:hidden" onClick={() => setMobileOpen(false)} />
+      )}
+
+      {/* Sidebar: off-canvas drawer on mobile, persistent collapsible rail on desktop */}
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-50 md:z-auto flex flex-col border-r border-border bg-background transition-transform md:transition-all duration-200 w-64 md:w-auto ${
+          collapsed ? "md:w-16" : "md:w-60"
+        } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+      >
+        <div className="h-14 flex items-center justify-between px-3 border-b border-border">
           <Link to="/" className="flex items-center min-w-0">
             <BrandLogo size={26} withWordmark={!collapsed} />
           </Link>
+          <button onClick={() => setMobileOpen(false)} className="md:hidden p-1 text-muted-foreground hover:text-foreground">
+            <X className="w-5 h-5" />
+          </button>
         </div>
         <nav className="flex-1 overflow-y-auto xa-scroll py-2">
           {NAV.map((sec) => (
@@ -58,12 +76,27 @@ export default function FactoryLayout() {
             </div>
           ))}
         </nav>
-        <button onClick={() => setCollapsed(!collapsed)} className="h-10 border-t border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="hidden md:flex h-10 border-t border-border items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+        >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
       </aside>
-      <main className="flex-1 overflow-y-auto xa-scroll">
-        <Outlet />
+
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {/* Mobile top bar */}
+        <div className="md:hidden h-12 flex items-center gap-2 px-3 border-b border-border bg-background">
+          <button onClick={() => setMobileOpen(true)} className="p-1.5 rounded-lg hover:bg-muted text-foreground">
+            <Menu className="w-5 h-5" />
+          </button>
+          <Link to="/" className="flex items-center">
+            <BrandLogo size={22} withWordmark />
+          </Link>
+        </div>
+        <div className="flex-1 overflow-y-auto xa-scroll">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
