@@ -36,6 +36,7 @@ import ProfileRegistry from '@/pages/ProfileRegistry';
 import SuperAgents from '@/pages/SuperAgents';
 import BootstrapWizard from '@/pages/BootstrapWizard';
 import AgentOperate from '@/pages/AgentOperate';
+import LeadScraper from '@/pages/LeadScraper';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -91,6 +92,7 @@ const AuthenticatedApp = () => {
           <Route path="/agents" element={<SuperAgents />} />
           <Route path="/bootstrap" element={<BootstrapWizard />} />
           <Route path="/agents/chat" element={<AgentOperate />} />
+          <Route path="/lead-scraper" element={<LeadScraper />} />
         </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />
