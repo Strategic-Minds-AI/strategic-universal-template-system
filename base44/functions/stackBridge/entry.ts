@@ -5,6 +5,20 @@ import { createClientFromRequest } from "npm:@base44/sdk@0.8.52";
 
 const conn = (base44, type) => base44.asServiceRole.connectors.getConnection(type);
 
+// Prefer the Supabase PAT the admin pasted into the Universal Provisioning
+// page (stored in AdapterDefinition.config_status.secrets.SUPABASE_ACCESS_TOKEN);
+// fall back to the OAuth connector token if no PAT is stored.
+async function getSupabaseToken(base44) {
+  try {
+    const page = await base44.asServiceRole.entities.AdapterDefinition.filter({ adapter_key: "supabase" }, { limit: 1 });
+    const rec = (page.items || [])[0];
+    const pat = rec?.config_status?.secrets?.SUPABASE_ACCESS_TOKEN;
+    if (pat && String(pat).trim()) return String(pat).trim();
+  } catch { /* fall through to connector */ }
+  const { accessToken } = await base44.asServiceRole.connectors.getConnection("supabase");
+  return accessToken;
+}
+
 export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
@@ -17,7 +31,7 @@ export default async function (req) {
 
     // ---------- Supabase ----------
     if (op === "supabase.projects") {
-      const { accessToken } = await conn(base44, "supabase");
+      const accessToken = await getSupabaseToken(base44);
       const r = await fetch("https://api.supabase.com/v1/projects", { headers: { Authorization: `Bearer ${accessToken}` } });
       const data = await j(r);
       return Response.json({ projects: (data || []).map((p) => ({ id: p.id, name: p.name, region: p.region, status: p.status })) });
@@ -27,7 +41,7 @@ export default async function (req) {
       const query = String(body.query || "");
       const write = !!body.write;
       if (!ref || !query) return Response.json({ error: "ref and query required" }, { status: 400 });
-      const { accessToken } = await conn(base44, "supabase");
+      const accessToken = await getSupabaseToken(base44);
       const path = write ? "query" : "query/read-only";
       const r = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/${path}`, {
         method: "POST",

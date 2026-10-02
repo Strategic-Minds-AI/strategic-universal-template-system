@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { Check, Save, Loader2, KeyRound, AlertTriangle, Eye, EyeOff, Plus, X } from "lucide-react";
+import { Check, Save, Loader2, KeyRound, AlertTriangle, Eye, EyeOff, Plus, X, Database } from "lucide-react";
 import { StatusPill } from "@/components/factory/EntityListPage.jsx";
 
 // A single provider credential card — the "box" for the API.
@@ -23,6 +23,8 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [err, setErr] = useState(null);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState(null);
 
   const setField = (k, v) => setConfig((c) => ({ ...c, [k]: v }));
   const setSecretValue = (s, v) => setSecretValues((m) => ({ ...m, [s]: v }));
@@ -60,6 +62,19 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
       setErr(e?.message || "Save failed");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const testConnection = async () => {
+    setTesting(true); setTestResult(null);
+    try {
+      const res = await base44.functions.invoke("stackBridge", { op: "supabase.projects" });
+      if (res?.error) setTestResult({ error: res.error });
+      else setTestResult({ projects: res.projects || [] });
+    } catch (e) {
+      setTestResult({ error: e?.message || "Test failed" });
+    } finally {
+      setTesting(false);
     }
   };
 
@@ -168,6 +183,18 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
         {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : (saved ? <Check className="w-3.5 h-3.5" /> : <Save className="w-3.5 h-3.5" />)}
         {saving ? "Saving…" : saved ? "Saved" : "Save configuration"}
       </button>
+
+      {provider.adapter_key === "supabase" && existing?.config_status?.secrets?.SUPABASE_ACCESS_TOKEN && (
+        <button onClick={testConnection} disabled={testing} className="xa-btn-outline text-xs w-full mt-2" style={{ padding: "9px 12px" }}>
+          {testing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Database className="w-3.5 h-3.5" />}
+          {testing ? "Testing…" : "Test connection"}
+        </button>
+      )}
+      {testResult && (
+        <div className={`mt-2 text-[11px] rounded-lg p-2 ${testResult.error ? "text-red-600 bg-red-50" : "text-green-700 bg-green-50"}`}>
+          {testResult.error ? `✗ ${testResult.error}` : `✓ Connected — ${testResult.projects.length} project(s) visible`}
+        </div>
+      )}
 
       {!ready && !saving && (
         <div className="flex items-start gap-1.5 mt-2 text-[10px] text-muted-foreground leading-snug">
