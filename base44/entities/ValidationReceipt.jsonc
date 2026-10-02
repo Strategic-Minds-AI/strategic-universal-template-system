@@ -1,0 +1,65 @@
+{
+  "name": "ValidationReceipt",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "build_spec_hash": {
+      "type": "string",
+      "title": "BuildSpec hash"
+    },
+    "registry_version": {
+      "type": "string",
+      "title": "Registry version"
+    },
+    "validator_id": {
+      "type": "string",
+      "default": "uff-validator-v1",
+      "title": "Independent validator id"
+    },
+    "hard_gates": {
+      "type": "object",
+      "title": "Hard gate results (pass/fail with evidence)"
+    },
+    "scores": {
+      "type": "object",
+      "title": "Category scores"
+    },
+    "deltas": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Repair deltas"
+    },
+    "repair_round": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "default": 0,
+      "title": "Repair round"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ],
+      "title": "Overall result"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence entries (no PASS without evidence)"
+    }
+  },
+  "required": [
+    "project_id",
+    "result"
+  ]
+}

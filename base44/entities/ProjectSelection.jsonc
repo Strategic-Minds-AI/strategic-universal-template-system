@@ -1,0 +1,50 @@
+{
+  "name": "ProjectSelection",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "family": {
+      "type": "string",
+      "title": "Pattern family"
+    },
+    "pattern_id": {
+      "type": "string",
+      "title": "Selected pattern ID"
+    },
+    "pattern_name": {
+      "type": "string",
+      "title": "Pattern name (denormalized)"
+    },
+    "score": {
+      "type": "number",
+      "title": "Compatibility score 0-100"
+    },
+    "frozen": {
+      "type": "boolean",
+      "default": false,
+      "title": "Frozen (locked)"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "operator",
+        "inferred",
+        "seeded"
+      ],
+      "default": "operator",
+      "title": "How this selection was made"
+    },
+    "rationale": {
+      "type": "string",
+      "title": "Why selected / blocked reason"
+    }
+  },
+  "required": [
+    "project_id",
+    "family",
+    "pattern_id"
+  ]
+}

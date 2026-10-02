@@ -1,0 +1,78 @@
+{
+  "name": "ConsultingEngagement",
+  "type": "object",
+  "properties": {
+    "client_name": {
+      "type": "string",
+      "title": "Client name"
+    },
+    "contact_email": {
+      "type": "string",
+      "title": "Contact email"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "lead",
+        "discovery",
+        "qualification",
+        "assessment",
+        "strategy",
+        "proposal",
+        "approval",
+        "build",
+        "validation",
+        "deployment",
+        "training",
+        "managed_service",
+        "reporting",
+        "optimization",
+        "renewal",
+        "expansion"
+      ],
+      "default": "lead",
+      "title": "Engagement stage"
+    },
+    "discovery_data": {
+      "type": "object",
+      "title": "Discovery answers"
+    },
+    "readiness_score": {
+      "type": "object",
+      "title": "AI readiness assessment scores"
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Identified opportunities"
+    },
+    "strategy": {
+      "type": "object",
+      "title": "AI strategy"
+    },
+    "governance": {
+      "type": "object",
+      "title": "AI governance model"
+    },
+    "proposal": {
+      "type": "object",
+      "title": "Proposal / SOW"
+    },
+    "package": {
+      "type": "string",
+      "enum": [
+        "strategy",
+        "build",
+        "scale",
+        "enterprise",
+        "custom"
+      ],
+      "title": "Consulting package"
+    }
+  },
+  "required": [
+    "client_name"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "VersionSnapshot",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "label": {
+      "type": "string",
+      "title": "Snapshot label"
+    },
+    "snapshot": {
+      "type": "object",
+      "title": "Frozen snapshot of selections + tokens"
+    }
+  },
+  "required": [
+    "project_id",
+    "label"
+  ]
+}

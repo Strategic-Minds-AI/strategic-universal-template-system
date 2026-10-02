@@ -1,0 +1,66 @@
+{
+  "name": "ProvisioningManifest",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "template_id": {
+      "type": "string",
+      "title": "Provisioning template id"
+    },
+    "template_type": {
+      "type": "string",
+      "enum": [
+        "business",
+        "user",
+        "application",
+        "infrastructure",
+        "google_workspace",
+        "domain",
+        "connector",
+        "ai_agent",
+        "teardown"
+      ],
+      "title": "Template type"
+    },
+    "dry_run": {
+      "type": "boolean",
+      "default": true,
+      "title": "Dry-run (no execution)"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Manifest items"
+    },
+    "rollback_plan": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Rollback steps"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "dry_run",
+        "approved",
+        "executing",
+        "complete",
+        "rolled_back"
+      ],
+      "default": "draft",
+      "title": "Manifest status"
+    }
+  },
+  "required": [
+    "project_id",
+    "template_id",
+    "template_type"
+  ]
+}

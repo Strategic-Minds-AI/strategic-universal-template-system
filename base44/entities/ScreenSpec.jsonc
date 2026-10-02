@@ -1,0 +1,73 @@
+{
+  "name": "ScreenSpec",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "route": {
+      "type": "string",
+      "title": "Route / path"
+    },
+    "title": {
+      "type": "string",
+      "title": "Screen title"
+    },
+    "order": {
+      "type": "number",
+      "title": "Display order"
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Section blueprint sequence"
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Component inventory"
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Required states"
+    },
+    "responsive_rules": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Responsive transformations"
+    },
+    "backend_dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Backend dependency declarations"
+    },
+    "analytics_events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Analytics event declarations"
+    },
+    "placeholder_content": {
+      "type": "object",
+      "title": "Placeholder content map"
+    }
+  },
+  "required": [
+    "project_id",
+    "route",
+    "title"
+  ]
+}

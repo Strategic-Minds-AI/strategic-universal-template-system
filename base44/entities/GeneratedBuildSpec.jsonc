@@ -1,0 +1,38 @@
+{
+  "name": "GeneratedBuildSpec",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "build_spec": {
+      "type": "object",
+      "title": "Full BuildSpec JSON"
+    },
+    "token_json": {
+      "type": "object",
+      "title": "DTCG-compatible design tokens"
+    },
+    "export_packet": {
+      "type": "object",
+      "title": "Complete export packet"
+    },
+    "registry_hash": {
+      "type": "string",
+      "title": "Registry hash"
+    },
+    "build_spec_hash": {
+      "type": "string",
+      "title": "BuildSpec hash"
+    },
+    "approved": {
+      "type": "boolean",
+      "default": false,
+      "title": "Operator approval"
+    }
+  },
+  "required": [
+    "project_id"
+  ]
+}

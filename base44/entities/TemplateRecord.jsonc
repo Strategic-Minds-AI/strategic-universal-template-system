@@ -1,0 +1,67 @@
+{
+  "name": "TemplateRecord",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "frontend",
+        "provisioning",
+        "consulting",
+        "ai_system",
+        "business_workflow",
+        "infrastructure",
+        "industry",
+        "client_delivery",
+        "page",
+        "section"
+      ],
+      "title": "Template family"
+    },
+    "name": {
+      "type": "string",
+      "title": "Template name"
+    },
+    "template_id": {
+      "type": "string",
+      "title": "Stable template id"
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0.0",
+      "title": "Template version"
+    },
+    "category": {
+      "type": "string",
+      "title": "Market category"
+    },
+    "payload": {
+      "type": "object",
+      "title": "Template definition (schema-driven)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "test",
+        "validated",
+        "approved",
+        "published"
+      ],
+      "default": "draft",
+      "title": "Promotion status"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Filter tags"
+    }
+  },
+  "required": [
+    "type",
+    "name",
+    "template_id"
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "name": "Project",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Project name"
+    },
+    "company": {
+      "type": "string",
+      "title": "Company name"
+    },
+    "industry": {
+      "type": "string",
+      "title": "Industry"
+    },
+    "product_archetype": {
+      "type": "string",
+      "title": "Product archetype"
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Target platforms"
+    },
+    "primary_goal": {
+      "type": "string",
+      "title": "Primary business goal"
+    },
+    "primary_conversion": {
+      "type": "string",
+      "title": "Primary conversion"
+    },
+    "seed": {
+      "type": "string",
+      "title": "Deterministic seed"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "quickstart",
+        "guided",
+        "brand-mode",
+        "reference-lock",
+        "vertical-clone",
+        "component-lab",
+        "auto-compose",
+        "benchmark-assisted",
+        "design-audit"
+      ],
+      "title": "Creation mode"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "composing",
+        "validating",
+        "validated",
+        "approved",
+        "exported",
+        "blocked"
+      ],
+      "default": "draft",
+      "title": "Project status"
+    },
+    "registry_version": {
+      "type": "string",
+      "title": "Registry version pin"
+    },
+    "quality_profile": {
+      "type": "string",
+      "default": "ceiling",
+      "title": "Quality profile"
+    },
+    "intake": {
+      "type": "object",
+      "title": "Structured intake answers"
+    },
+    "summary": {
+      "type": "string",
+      "title": "Short summary"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

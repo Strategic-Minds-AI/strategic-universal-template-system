@@ -1,0 +1,37 @@
+{
+  "name": "VarianceRequest",
+  "type": "object",
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "locked_field": {
+      "type": "string",
+      "title": "Locked field being varied"
+    },
+    "requested_change": {
+      "type": "string",
+      "title": "Requested change"
+    },
+    "reason": {
+      "type": "string",
+      "title": "Justification"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "approved",
+        "rejected"
+      ],
+      "default": "open",
+      "title": "Approval status"
+    }
+  },
+  "required": [
+    "project_id",
+    "locked_field",
+    "requested_change"
+  ]
+}
