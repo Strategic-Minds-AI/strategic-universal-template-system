@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Plug } from "lucide-react";
 import { ADAPTERS } from "@/lib/factory/generator/adapters";
 import { StatusPill } from "@/components/factory/EntityListPage.jsx";
+import { PREVIEW_STYLES } from "@/lib/gallery/previewStyles.js";
+import { loadConfig, themeToCssVars } from "@/lib/gallery/studioConfig.js";
+import VisualizerCard from "@/components/visualizer/VisualizerCard.jsx";
 
 export default function AdapterLibrary() {
+  const config = loadConfig();
+  const themeVars = useMemo(() => themeToCssVars(config), []);
+
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
+      <style>{PREVIEW_STYLES}</style>
       <div className="flex items-center gap-3 mb-5">
         <div className="xa-icon-chip"><Plug className="w-5 h-5" /></div>
         <div>
@@ -13,33 +20,20 @@ export default function AdapterLibrary() {
           <p className="text-sm text-muted-foreground mt-0.5">Integration adapters with explicit health and required configuration. Unconfigured adapters return NOT_CONFIGURED — never fake success.</p>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div style={themeVars} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {ADAPTERS.map((a) => (
-          <div key={a.adapter_key} className="xa-card p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="font-heading font-bold text-sm">{a.name}</div>
-              <StatusPill status={a.health_state} />
-            </div>
-            <div className="font-mono text-xs text-muted-foreground mb-2">{a.adapter_key}</div>
-            <div className="flex flex-wrap gap-1 mb-2">
-              {a.capabilities.map((c) => (
-                <span key={c} className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">{c}</span>
-              ))}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              <span className="font-semibold text-foreground">{a.actions.length}</span> actions · <span className="font-semibold text-amber-600">{a.actions.filter((x) => x.risk_class === "PROTECTED").length}</span> protected
-            </div>
-            {a.secret_references.length > 0 && (
-              <div className="mt-2 pt-2 border-t border-border">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Required secrets</div>
-                <div className="flex flex-wrap gap-1">
-                  {a.secret_references.map((s) => (
-                    <span key={s} className="text-[10px] font-mono text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">{s}</span>
-                  ))}
-                </div>
+          <VisualizerCard
+            key={a.adapter_key}
+            title={a.name}
+            keyField={a.adapter_key}
+            status={a.health_state}
+            adapter={a}
+            footer={
+              <div className="flex flex-wrap gap-1">
+                {a.capabilities.map((c) => (<span key={c} className="text-[10px] font-mono text-muted-foreground bg-muted px-1.5 py-0.5 rounded">{c}</span>))}
               </div>
-            )}
-          </div>
+            }
+          />
         ))}
       </div>
     </div>
