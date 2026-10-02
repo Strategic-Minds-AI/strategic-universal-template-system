@@ -125,10 +125,10 @@ export default function Dashboard() {
         <div className="flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
           <div className="text-sm">
-            <div className="font-bold">Integration credits exhausted until 2026-10-12</div>
+            <div className="font-bold">AI provider: Vercel AI Gateway</div>
             <div className="text-muted-foreground mt-1">
-              AI Gateway, sandbox, and external adapter actions return <span className="font-mono font-semibold">NOT_CONFIGURED</span> honestly — no fake success.
-              Deterministic generators (text, document, provisioning plans, schema validation, checksums) run fully. This is a workspace billing limitation, not a code defect.
+              Agent conversations, AI generator steps, evaluations, logos, and palettes route through your server-side Vercel AI Gateway. No platform-AI fallback.
+              Sandbox execution and external provisioning still require their own configured adapters.
             </div>
           </div>
         </div>

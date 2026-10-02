@@ -17,9 +17,7 @@
 const ENV = (k, fallback = "") => import.meta.env?.[k] ?? fallback;
 const SUPABASE_URL = ENV("VITE_SUPABASE_URL").replace(/\/+$/, "");
 const SUPABASE_ANON_KEY = ENV("VITE_SUPABASE_ANON_KEY");
-const AI_GATEWAY_URL = (ENV("VITE_VERCEL_AI_GATEWAY_URL") || "https://ai-gateway.vercel.sh/v1").replace("ai-gateway.vercel.app", "ai-gateway.vercel.sh").replace(/\/+$/, "");
-const AI_GATEWAY_KEY = ENV("VITE_VERCEL_AI_GATEWAY_KEY");
-const AI_MODEL = ENV("VITE_VERCEL_AI_GATEWAY_MODEL") || "openai/gpt-4o-mini";
+// AI credentials are server-only; the browser invokes authenticated operations.
 
 // ---- token storage (Supabase GoTrue access/refresh tokens) ----
 const TK = "sb_access_token", RK = "sb_refresh_token";
@@ -236,17 +234,14 @@ const functions = {
     const res = await fetch("/api/" + name, { method: "POST", headers, body: JSON.stringify(payload || {}) });
     const data = await json(res);
     if (!res.ok) throw new Error(data && data.error || name + " failed (" + res.status + ")");
-    return data;
+    return { data, status: res.status };
   },
 };
 
 // ---- integrations.Core (subset the app uses) ----
 async function aiChat({ prompt, model, messages, response_json_schema }) {
-  const msgs = messages || [{ role: "user", content: prompt }];
-  const res = await fetch(AI_GATEWAY_URL + "/chat/completions", { method: "POST", headers: { Authorization: "Bearer " + AI_GATEWAY_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ model: model || AI_MODEL, messages: msgs, ...(response_json_schema ? { response_format: { type: "json_schema", json_schema: response_json_schema } } : {}) }) });
-  if (!res.ok) throw new Error("AI Gateway " + res.status + ": " + (await res.text()).slice(0, 300));
-  const data = await res.json();
-  return (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "";
+  const res = await functions.invoke("vercelAI", { prompt, model, messages, response_json_schema });
+  return response_json_schema ? JSON.parse(res.data.content) : res.data.content;
 }
 
 async function uploadToStorage(file, bucket, isPublic) {
@@ -272,7 +267,7 @@ const integrations = {
       const data = await json(res);
       return { signed_url: SUPABASE_URL + data.signedURL };
     },
-    GenerateImage: async () => { throw new Error("GenerateImage: wire an image provider in the standalone build."); },
+    GenerateImage: async ({ prompt }) => (await functions.invoke("generateLogo", { style: prompt })).data,
     SendEmail: async () => { throw new Error("SendEmail: wire Resend in the Vercel /api function."); },
     TranscribeAudio: async () => { throw new Error("TranscribeAudio: wire a provider in /api."); },
     GenerateSpeech: async () => { throw new Error("GenerateSpeech: wire a TTS provider in /api."); },

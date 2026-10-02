@@ -4,7 +4,7 @@
 // super-agents-zero fleet definition (base44/agents/*.jsonc) on 2026-10-02.
 // Bootstrap a ready-to-go packet by answering the questionnaire (logo, accent color,
 // content, images, variables) — deterministic substitution runs today; AI enrichment
-// steps are gated NOT_CONFIGURED until integration credits reset on 2026-10-12.
+// steps and live conversations use the owner's server-side Vercel AI Gateway.
 
 export const REGISTRY_VERSION = "1.1.0";
 export const FLEET_SOURCE = "super-agents-zero";
@@ -560,6 +560,6 @@ export async function bootstrapAgent(agentKey, answers) {
     variables: answers,
     validation: { missing_required: missing, errors, ready: missing.length === 0 && errors.length === 0 },
     files: hashed,
-    ai_enrichment: { status: "NOT_CONFIGURED", reason: "AI Gateway credits exhausted until 2026-10-12. Deterministic template rendered; AI steps (copywriting, code gen, outreach) re-enable when credits reset." },
+    ai_enrichment: { status: "NOT_RUN", provider: "vercel-ai-gateway", reason: "This bootstrap renders a deterministic template; it does not run AI enrichment. Use Operate or an AI generator to invoke your Vercel AI Gateway." },
   };
 }

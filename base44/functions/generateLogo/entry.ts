@@ -1,7 +1,6 @@
-// AI Logo Generator — runs GenerateImage through the server-side AI gateway
-// (base44.asServiceRole.integrations.Core) so credentials stay server-side and
-// the call is governed. Returns a public image URL.
+// Logo generation uses only the owner's Vercel AI Gateway.
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.52";
+import { vercelImage } from "../../shared/vercelAI.ts";
 
 export default async function (req) {
   try {
@@ -21,8 +20,8 @@ export default async function (req) {
       `Clean, scalable vector-style emblem, centered on a plain white background, ` +
       `no photographic elements, modern tech brand identity, high contrast.`;
 
-    const res = await base44.asServiceRole.integrations.Core.GenerateImage({ prompt });
-    return Response.json({ url: res.url });
+    const url = await vercelImage(prompt);
+    return Response.json({ via: "vercel-ai-gateway", url });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }

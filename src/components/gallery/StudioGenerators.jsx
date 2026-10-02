@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Sparkles, Wand2, Loader2, Download, ImagePlus } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { Image } from "@/components/ui/image";
 
 const LOGO_STYLES = [
   "Modern minimalist geometric mark",
@@ -72,7 +73,7 @@ export default function StudioGenerators({ config, onChange }) {
         </div>
         {logoUrl && (
           <div className="mt-2 flex items-center gap-2">
-            <img src={logoUrl} alt="Generated logo" className="h-12 w-12 object-contain rounded-lg border border-border bg-white p-1" />
+            <Image src={logoUrl} alt="Generated logo" fittingType="fit" className="h-12 w-12 rounded-lg border border-border bg-background p-1" />
             <button onClick={() => onChange({ ...config, logoImage: logoUrl })} className="inline-flex items-center gap-1 text-xs font-semibold text-[#0d2f96]">
               <ImagePlus className="w-3.5 h-3.5" />{config.logoImage === logoUrl ? "In previews" : "Use in previews"}
             </button>

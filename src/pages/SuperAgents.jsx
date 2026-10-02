@@ -71,7 +71,7 @@ export default function SuperAgents() {
           <div className="text-xs text-muted-foreground">
             <strong className="text-foreground">How it works:</strong> Pick an agent → answer the brand questionnaire (logo, accent color, content, images, variables) →
             the factory deterministically renders a ready-to-go template packet (file tree + manifest, SHA-256 integrity).
-            AI enrichment (copywriting, code generation, outreach) re-enables when workspace integration credits reset on 2026-10-12 — until then those steps return <span className="font-mono font-semibold">NOT_CONFIGURED</span> honestly.
+            Use Operate to chat with any agent through your Vercel AI Gateway; AI generator steps, logos, and color palettes use the same gateway with no platform-AI fallback.
           </div>
         </div>
       </div>

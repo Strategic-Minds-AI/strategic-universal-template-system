@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { getAgent, SUPER_AGENTS } from "@/lib/factory/superAgents";
-import { ArrowLeft, Wrench, Terminal, AlertTriangle } from "lucide-react";
+import { getAgent } from "@/lib/factory/superAgents";
+import { ArrowLeft, Terminal } from "lucide-react";
+import GatewayConversation from "@/components/agents/GatewayConversation";
 
 export default function AgentOperate() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const agentKey = params.get("agent") || "orchestrator";
   const agent = getAgent(agentKey);
-  const [input, setInput] = useState("");
 
   if (!agent) {
     return <div className="p-8 text-sm text-muted-foreground">Unknown agent. <button className="underline" onClick={() => navigate("/agents")}>Back</button></div>;
@@ -50,32 +50,7 @@ export default function AgentOperate() {
         </div>
       </div>
 
-      <div className="xa-card p-4 border-amber-200 mb-4">
-        <div className="flex items-start gap-3">
-          <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-          <div className="text-xs">
-            <div className="font-bold text-foreground">Live agent loop: NOT_CONFIGURED</div>
-            <div className="text-muted-foreground mt-1">
-              The conversation runtime (LLM tool loop) needs the AI Gateway, which is out of integration credits until 2026-10-12.
-              The agent definition, system prompt, and tools above are registered and versioned — the moment credits reset, this shell
-              connects to the live loop with zero code changes. Meanwhile, you can still bootstrap this agent's template deterministically.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="xa-card p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Wrench className="w-3.5 h-3.5 text-[#0d2f96]" />
-          <span className="text-xs font-semibold">Give {agent.name} a goal</span>
-        </div>
-        <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={3} disabled
-          placeholder="Live dispatch re-enables when the AI Gateway is configured (credits reset 2026-10-12)."
-          className="w-full px-3 py-2 text-sm rounded-lg border border-input bg-muted/40 text-muted-foreground resize-none" />
-        <button disabled className="xa-btn-outline text-xs w-full mt-2 opacity-50 cursor-default" style={{ padding: "8px 12px" }}>
-          Dispatch (NOT_CONFIGURED)
-        </button>
-      </div>
+      <GatewayConversation key={agentKey} agentKey={agentKey} context={agent.system_prompt} name={agent.name} />
     </div>
   );
 }

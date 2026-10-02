@@ -1,108 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { base44 } from "@/api/base44Client";
 import { X, Send, Bot, Loader2, Sparkles, ChevronLeft } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-
-const AGENT = "strategic_operator";
-
-function ToolPill({ tc }) {
-  const status = tc.status || "pending";
-  const done = status === "completed" || status === "success";
-  const failed = ["failed", "error"].includes(status) || (tc.results && /error|failed/i.test(String(tc.results)));
-  const label = tc.display_projection?.label || tc.name || "tool";
-  const hide = tc.display_projection?.hide_details && tc.display_projection?.details_redacted;
-  const [open, setOpen] = useState(false);
-  let parsed;
-  try { parsed = typeof tc.results === "string" ? JSON.parse(tc.results) : tc.results; } catch { parsed = tc.results; }
-  return (
-    <div className="mt-1.5 text-xs">
-      <button onClick={() => !hide && setOpen(!open)} className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground">
-        {failed ? <span className="text-red-600 font-bold">✕</span> : done ? <span className="text-green-600 font-bold">✓</span> : <Loader2 className="w-3 h-3 animate-spin" />}
-        <span className="font-mono">{label}</span>
-        <span className="text-[10px] uppercase tracking-wide">{failed ? "failed" : done ? "done" : "running"}</span>
-      </button>
-      {!hide && open && (
-        <div className="mt-1 ml-4 space-y-1">
-          {tc.arguments_string && <div><span className="font-semibold">Args:</span> <code className="text-[10px] break-all">{tc.arguments_string}</code></div>}
-          {parsed != null && <div><span className="font-semibold">Result:</span><pre className="text-[10px] bg-muted p-1.5 rounded overflow-auto max-h-32 mt-0.5">{typeof parsed === "string" ? parsed : JSON.stringify(parsed, null, 2)}</pre></div>}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Bubble({ m }) {
-  const isUser = m.role === "user";
-  return (
-    <div className={isUser ? "flex justify-end" : "flex justify-start"}>
-      <div className={`max-w-[88%] rounded-2xl px-3 py-2 ${isUser ? "bg-[#0059ff] text-white" : "bg-muted text-foreground"}`}>
-        {m.content && (isUser ? <p className="text-sm whitespace-pre-wrap">{m.content}</p> : <ReactMarkdown className="text-sm prose prose-sm max-w-none">{m.content}</ReactMarkdown>)}
-        {m.tool_calls?.map((tc, i) => <ToolPill key={i} tc={tc} />)}
-      </div>
-    </div>
-  );
-}
+import GatewayMessage from "@/components/agents/GatewayMessage";
+import useGatewayConversation from "@/components/agents/useGatewayConversation";
 
 export default function AgentChat() {
   const [open, setOpen] = useState(false);
-  const [conversation, setConversation] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [loadingConv, setLoadingConv] = useState(false);
+  const { messages, input, setInput, busy, error, send, ready } = useGatewayConversation();
   const scrollRef = useRef(null);
-  const busyTimeout = useRef(null);
-
-  useEffect(() => {
-    if (!open || conversation) return;
-    setLoadingConv(true);
-    (async () => {
-      try {
-        const list = await base44.agents.listConversations({ agent_name: AGENT });
-        let conv = list && list[0];
-        if (!conv) conv = await base44.agents.createConversation({ agent_name: AGENT, metadata: { name: "Strategic Operator", description: "Autonomous operator session" } });
-        setConversation(conv);
-        setMessages(conv.messages || []);
-      } catch (e) {
-        setMessages([{ role: "assistant", content: "Could not start the operator agent: " + (e?.message || "unknown") + ". The agent is configured — if this persists, integration credits may be exhausted this month." }]);
-      } finally {
-        setLoadingConv(false);
-      }
-    })();
-  }, [open]);
-
-  useEffect(() => {
-    if (!conversation) return;
-    const unsub = base44.agents.subscribeToConversation(conversation.id, (data) => {
-      if (busyTimeout.current) clearTimeout(busyTimeout.current);
-      setMessages(data.messages || []);
-      setBusy(false);
-    });
-    return () => unsub();
-  }, [conversation]);
-
   useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight }); }, [messages]);
-
-  const send = async () => {
-    const text = input.trim();
-    if (!text || !conversation || busy) return;
-    setInput("");
-    setBusy(true);
-    setMessages((m) => [...m, { role: "user", content: text }]);
-    if (busyTimeout.current) clearTimeout(busyTimeout.current);
-    busyTimeout.current = setTimeout(() => {
-      setBusy(false);
-      setMessages((m) => [...m, { role: "assistant", content: "The operator couldn't respond right now — the workspace AI integration credits are exhausted for this period (limit reached; they reset on 2026-10-12). This is a billing limit, not a code bug. Everything else in the factory still works." }]);
-    }, 25000);
-    try {
-      const updated = await base44.agents.addMessage(conversation, { role: "user", content: text });
-      setConversation(updated);
-    } catch (e) {
-      if (busyTimeout.current) clearTimeout(busyTimeout.current);
-      setBusy(false);
-      setMessages((m) => [...m, { role: "assistant", content: "Error sending: " + (e?.message || "failed") }]);
-    }
-  };
 
   return (
     <>
@@ -122,20 +27,20 @@ export default function AgentChat() {
             <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center"><Sparkles className="w-4 h-4" /></div>
             <div>
               <div className="text-sm font-black">Strategic Operator</div>
-              <div className="text-[10px] opacity-90">Autonomous agent · full system access</div>
+              <div className="text-[10px] opacity-90">Vercel AI Gateway · factory tools</div>
             </div>
           </div>
           <button onClick={() => setOpen(false)} className="p-1.5 rounded-lg hover:bg-white/15"><X className="w-4 h-4" /></button>
         </div>
 
         <div ref={scrollRef} className="flex-1 overflow-y-auto xa-scroll p-3 space-y-3">
-          {loadingConv && <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground py-8"><Loader2 className="w-4 h-4 animate-spin" />Starting agent…</div>}
-          {!loadingConv && messages.length === 0 && (
+          {messages.length === 0 && (
             <div className="text-sm text-muted-foreground py-8 text-center">
               Ask the operator to audit the factory, fix a run, optimize a registry, generate a logo, or provision a connected account.
             </div>
           )}
-          {messages.map((m, i) => <Bubble key={i} m={m} />)}
+          {messages.map((m, i) => <GatewayMessage key={i} m={m} />)}
+          {error && <div role="alert" className="text-xs text-destructive">{error}</div>}
           {busy && <div className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="w-3 h-3 animate-spin" />Operator is working…</div>}
         </div>
 
@@ -149,7 +54,7 @@ export default function AgentChat() {
               placeholder="Tell the operator what to do…"
               className="flex-1 resize-none rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0059ff] max-h-32"
             />
-            <button onClick={send} disabled={busy || !conversation} className="xa-btn-primary" style={{ padding: "10px 12px" }}>
+            <button onClick={send} disabled={busy || !ready || !input.trim()} className="xa-btn-primary" aria-label="Send to operator" style={{ padding: "10px 12px" }}>
               {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </div>

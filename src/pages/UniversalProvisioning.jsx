@@ -260,7 +260,7 @@ export default function UniversalProvisioning() {
           <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
           <div className="text-[11px]">
             <span className="font-bold">Live execution: NOT_CONFIGURED</span>
-            <span className="text-muted-foreground block mt-0.5">Paste each provider's API token into its box above (stored in the app DB, admin-only). Live provisioning also needs integration credits, which are exhausted until 2026-10-12 — a workspace billing limit, not a code issue. Dry-run plans generate fully now.</span>
+            <span className="text-muted-foreground block mt-0.5">Configure each provider above before executing infrastructure changes. AI planning uses your Vercel AI Gateway; live provisioning still requires connected adapters and approval. Dry-run plans make no infrastructure changes.</span>
           </div>
         </div>
       </div>

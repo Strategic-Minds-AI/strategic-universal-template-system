@@ -6,16 +6,16 @@ import { RISK_CLASSES } from "./registry.js";
 export const ADAPTERS = [
   {
     adapter_key: "ai-gateway",
-    name: "AI Model Gateway",
+    name: "Vercel AI Gateway",
     capabilities: ["ai_generate", "ai_evaluate", "embeddings"],
     actions: [
       { name: "generate", risk_class: "READ", idempotent: false, requires_approval: false },
       { name: "evaluate", risk_class: "READ", idempotent: false, requires_approval: false },
       { name: "embed", risk_class: "READ", idempotent: true, requires_approval: false },
     ],
-    secret_references: ["AI_GATEWAY_KEY"],
-    health_state: "not_configured",
-    config_schema: { type: "object", required: ["provider", "apiKey"], properties: { provider: { type: "string" }, apiKey: { type: "string" } } },
+    secret_references: ["VERCEL_AI_GATEWAY_KEY"],
+    health_state: "healthy",
+    config_schema: { type: "object", properties: { provider: { type: "string", enum: ["vercel"] }, model: { type: "string" } } },
   },
   {
     adapter_key: "http-api",

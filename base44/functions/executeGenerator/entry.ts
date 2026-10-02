@@ -5,6 +5,8 @@
 // resume. External/AI/sandbox adapters return NOT_CONFIGURED honestly —
 // never fake success.
 import { createClientFromRequest } from "npm:@base44/sdk@0.8.52";
+import { vercelChat } from "../../shared/vercelAI.ts";
+import { executeAINode } from "../../shared/generatorAI.ts";
 
 // ---- pure helpers (server-side; cannot import src/) ----
 
@@ -180,7 +182,7 @@ async function executeNode(node, ctx) {
     }
     case "ai_generate":
     case "ai_evaluate": {
-      return { status: "blocked", error: { code: "NOT_CONFIGURED", adapter: "ai-gateway", action: node.type, missing: ["AI_GATEWAY_KEY"], health_state: "not_configured", message: "AI Gateway not configured (integration credits exhausted). No fake success." } };
+      return executeAINode(node, ctx, { chat: vercelChat, renderText, sha256 });
     }
     case "code_execute":
     case "test": {
