@@ -1,0 +1,49 @@
+{
+  "name": "On Provisioning Plan Rolled Back",
+  "description": "When a ProvisioningPlan transitions to rolled_back status, logs a critical audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "ProvisioningPlan",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"rolled_back\" and .trigger.old_data.status != \"rolled_back\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_provisioning_plan_rolled_back",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_rolled_back": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "provisioning_plan_rolled_back",
+              "entity_type": "ProvisioningPlan",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "critical",
+              "workflow_name": "On Provisioning Plan Rolled Back",
+              "payload": {
+                "project_id": "${ .trigger.data.project_id }",
+                "template_id": "${ .trigger.data.template_id }",
+                "rollback": "${ .trigger.data.rollback }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log plan rolled back",
+            "description": "Critical audit on plan rollback"
+          }
+        }
+      }
+    ]
+  }
+}

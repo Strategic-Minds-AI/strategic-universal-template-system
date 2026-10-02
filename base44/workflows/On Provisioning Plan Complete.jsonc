@@ -1,0 +1,48 @@
+{
+  "name": "On Provisioning Plan Complete",
+  "description": "When a ProvisioningPlan transitions to complete status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "ProvisioningPlan",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"complete\" and .trigger.old_data.status != \"complete\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_provisioning_plan_complete",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_complete": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "provisioning_plan_complete",
+              "entity_type": "ProvisioningPlan",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Provisioning Plan Complete",
+              "payload": {
+                "project_id": "${ .trigger.data.project_id }",
+                "template_id": "${ .trigger.data.template_id }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log plan complete",
+            "description": "Audit on plan completed"
+          }
+        }
+      }
+    ]
+  }
+}

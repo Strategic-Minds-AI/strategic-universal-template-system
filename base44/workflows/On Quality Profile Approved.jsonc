@@ -1,0 +1,48 @@
+{
+  "name": "On Quality Profile Approved",
+  "description": "When a QualityProfile transitions to approved status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "QualityProfile",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"approved\" and .trigger.old_data.status != \"approved\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_quality_profile_approved",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_approved": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "quality_profile_approved",
+              "entity_type": "QualityProfile",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Quality Profile Approved",
+              "payload": {
+                "profile_key": "${ .trigger.data.profile_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log quality profile approved",
+            "description": "Audit on quality profile approved"
+          }
+        }
+      }
+    ]
+  }
+}

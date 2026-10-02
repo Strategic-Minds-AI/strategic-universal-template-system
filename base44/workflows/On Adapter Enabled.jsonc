@@ -1,0 +1,48 @@
+{
+  "name": "On Adapter Enabled",
+  "description": "When an AdapterDefinition is enabled, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "AdapterDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.enabled == true and .trigger.old_data.enabled != true }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_adapter_enabled",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_enabled": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "adapter_enabled",
+              "entity_type": "AdapterDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Adapter Enabled",
+              "payload": {
+                "adapter_key": "${ .trigger.data.adapter_key }",
+                "name": "${ .trigger.data.name }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log adapter enabled",
+            "description": "Audit on adapter enabled"
+          }
+        }
+      }
+    ]
+  }
+}

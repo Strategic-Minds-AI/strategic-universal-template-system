@@ -1,0 +1,48 @@
+{
+  "name": "On Release Profile Frozen",
+  "description": "When a ReleaseProfile transitions to frozen status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "ReleaseProfile",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"frozen\" and .trigger.old_data.status != \"frozen\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_release_profile_frozen",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_frozen": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "release_profile_frozen",
+              "entity_type": "ReleaseProfile",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Release Profile Frozen",
+              "payload": {
+                "profile_key": "${ .trigger.data.profile_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log release profile frozen",
+            "description": "Audit on release profile frozen"
+          }
+        }
+      }
+    ]
+  }
+}

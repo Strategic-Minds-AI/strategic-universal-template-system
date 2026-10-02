@@ -1,0 +1,48 @@
+{
+  "name": "On Template Pack Deleted",
+  "description": "When a TemplatePack is deleted, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "TemplatePack",
+      "events": [
+        "delete"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_template_pack_deleted",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_deleted": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "template_pack_deleted",
+              "entity_type": "TemplatePack",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Template Pack Deleted",
+              "payload": {
+                "template_key": "${ .trigger.old_data.template_key }",
+                "version": "${ .trigger.old_data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log pack deleted",
+            "description": "Audit on template pack deletion"
+          }
+        }
+      }
+    ]
+  }
+}

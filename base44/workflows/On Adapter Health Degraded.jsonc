@@ -1,0 +1,48 @@
+{
+  "name": "On Adapter Health Degraded",
+  "description": "When an AdapterDefinition health_state transitions to degraded, logs a warning audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "AdapterDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.health_state == \"degraded\" and .trigger.old_data.health_state != \"degraded\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_adapter_health_degraded",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_degraded": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "adapter_health_degraded",
+              "entity_type": "AdapterDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "warn",
+              "workflow_name": "On Adapter Health Degraded",
+              "payload": {
+                "adapter_key": "${ .trigger.data.adapter_key }",
+                "health_state": "${ .trigger.data.health_state }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log adapter degraded",
+            "description": "Warning audit on adapter degraded"
+          }
+        }
+      }
+    ]
+  }
+}

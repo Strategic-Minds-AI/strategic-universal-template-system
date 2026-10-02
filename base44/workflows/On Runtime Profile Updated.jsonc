@@ -1,0 +1,49 @@
+{
+  "name": "On Runtime Profile Updated",
+  "description": "When a RuntimeProfile is updated, logs an audit event tracking limit or timeout changes.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "RuntimeProfile",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": null
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_runtime_profile_updated",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_updated": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "runtime_profile_updated",
+              "entity_type": "RuntimeProfile",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Runtime Profile Updated",
+              "payload": {
+                "profile_key": "${ .trigger.data.profile_key }",
+                "version": "${ .trigger.data.version }",
+                "status": "${ .trigger.data.status }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log runtime profile updated",
+            "description": "Audit on runtime profile update"
+          }
+        }
+      }
+    ]
+  }
+}

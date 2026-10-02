@@ -1,0 +1,48 @@
+{
+  "name": "On Monetization Profile Approved",
+  "description": "When a MonetizationProfile transitions to approved status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "MonetizationProfile",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"approved\" and .trigger.old_data.status != \"approved\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_monetization_profile_approved",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_approved": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "monetization_profile_approved",
+              "entity_type": "MonetizationProfile",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Monetization Profile Approved",
+              "payload": {
+                "profile_key": "${ .trigger.data.profile_key }",
+                "version": "${ .trigger.data.version }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log monetization profile approved",
+            "description": "Audit on monetization profile approved"
+          }
+        }
+      }
+    ]
+  }
+}

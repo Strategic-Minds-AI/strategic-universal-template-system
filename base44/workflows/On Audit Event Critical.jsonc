@@ -1,0 +1,49 @@
+{
+  "name": "On Audit Event Critical",
+  "description": "When a critical AuditEvent is created, logs an escalation audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "AuditEvent",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ .trigger.data.severity == \"critical\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_audit_event_critical",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_critical": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "audit_event_critical_escalation",
+              "entity_type": "AuditEvent",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "critical",
+              "workflow_name": "On Audit Event Critical",
+              "payload": {
+                "event_type": "${ .trigger.data.event_type }",
+                "entity_type": "${ .trigger.data.entity_type }",
+                "entity_id": "${ .trigger.data.entity_id }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log critical escalation",
+            "description": "Critical audit event escalation"
+          }
+        }
+      }
+    ]
+  }
+}

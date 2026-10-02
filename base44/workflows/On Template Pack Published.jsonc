@@ -1,0 +1,49 @@
+{
+  "name": "On Template Pack Published",
+  "description": "When a TemplatePack transitions to published status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "TemplatePack",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"published\" and .trigger.old_data.status != \"published\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_template_pack_published",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_published": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "template_pack_published",
+              "entity_type": "TemplatePack",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Template Pack Published",
+              "payload": {
+                "template_key": "${ .trigger.data.template_key }",
+                "version": "${ .trigger.data.version }",
+                "mode": "${ .trigger.data.mode }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log pack published",
+            "description": "Audit on template pack published"
+          }
+        }
+      }
+    ]
+  }
+}

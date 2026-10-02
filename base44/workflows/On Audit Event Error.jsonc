@@ -1,0 +1,49 @@
+{
+  "name": "On Audit Event Error",
+  "description": "When an error-level AuditEvent is created, logs a tracking audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "AuditEvent",
+      "events": [
+        "create"
+      ]
+    },
+    "condition": "${ .trigger.data.severity == \"error\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_audit_event_error",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_error": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "audit_event_error_tracked",
+              "entity_type": "AuditEvent",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "error",
+              "workflow_name": "On Audit Event Error",
+              "payload": {
+                "event_type": "${ .trigger.data.event_type }",
+                "entity_type": "${ .trigger.data.entity_type }",
+                "entity_id": "${ .trigger.data.entity_id }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log error audit",
+            "description": "Error-level audit event tracking"
+          }
+        }
+      }
+    ]
+  }
+}

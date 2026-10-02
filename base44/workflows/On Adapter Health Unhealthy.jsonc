@@ -1,0 +1,48 @@
+{
+  "name": "On Adapter Health Unhealthy",
+  "description": "When an AdapterDefinition health_state transitions to unhealthy, logs a critical audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "AdapterDefinition",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.health_state == \"unhealthy\" and .trigger.old_data.health_state != \"unhealthy\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_adapter_health_unhealthy",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_unhealthy": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "adapter_health_unhealthy",
+              "entity_type": "AdapterDefinition",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "critical",
+              "workflow_name": "On Adapter Health Unhealthy",
+              "payload": {
+                "adapter_key": "${ .trigger.data.adapter_key }",
+                "health_state": "${ .trigger.data.health_state }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log adapter unhealthy",
+            "description": "Critical audit on adapter unhealthy"
+          }
+        }
+      }
+    ]
+  }
+}

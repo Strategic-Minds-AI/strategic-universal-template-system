@@ -1,0 +1,48 @@
+{
+  "name": "On Provisioning Plan Approved",
+  "description": "When a ProvisioningPlan transitions to approved status, logs an audit event.",
+  "trigger": {
+    "config": {
+      "trigger_type": "entity",
+      "entity_name": "ProvisioningPlan",
+      "events": [
+        "update"
+      ]
+    },
+    "condition": "${ .trigger.data.status == \"approved\" and .trigger.old_data.status != \"approved\" }"
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "on_provisioning_plan_approved",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "log_approved": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "logFactoryEvent",
+            "args": {
+              "event_type": "provisioning_plan_approved",
+              "entity_type": "ProvisioningPlan",
+              "entity_id": "${ .trigger.entity_id }",
+              "severity": "info",
+              "workflow_name": "On Provisioning Plan Approved",
+              "payload": {
+                "project_id": "${ .trigger.data.project_id }",
+                "template_id": "${ .trigger.data.template_id }"
+              }
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Log plan approved",
+            "description": "Audit on plan approved"
+          }
+        }
+      }
+    ]
+  }
+}
