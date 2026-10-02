@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { LayoutTemplate, Search, Smartphone, Monitor, Workflow } from "lucide-react";
 import { PREVIEW_STYLES } from "@/lib/gallery/previewStyles.js";
 import { GALLERY_FAMILIES, familyFor } from "@/lib/gallery/previewRenderer.js";
-import { loadConfig, saveConfig, themeToCssVars, DEFAULT_CONFIG } from "@/lib/gallery/studioConfig.js";
+import { loadConfig, saveConfig, themeToCssVars, DEFAULT_CONFIG, loadFont } from "@/lib/gallery/studioConfig.js";
 import TemplatePreview from "@/components/gallery/TemplatePreview.jsx";
 import TemplateDetailModal from "@/components/gallery/TemplateDetailModal.jsx";
 import StudioPanel from "@/components/gallery/StudioPanel.jsx";
@@ -21,6 +21,7 @@ export default function VisualGallery() {
   const [config, setConfig] = useState(() => loadConfig());
 
   useEffect(() => { saveConfig(config); }, [config]);
+  useEffect(() => { loadFont(config.fontFamily); }, [config.fontFamily]);
 
   const themeVars = useMemo(() => themeToCssVars(config), [config]);
 
@@ -130,7 +131,7 @@ export default function VisualGallery() {
         )}
       </div>
 
-      <TemplateDetailModal template={selected} config={config} themeVars={themeVars} onClose={() => setSelected(null)} />
+      <TemplateDetailModal template={selected} config={config} themeVars={themeVars} onChange={setConfig} onClose={() => setSelected(null)} />
     </div>
   );
 }

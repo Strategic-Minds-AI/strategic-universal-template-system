@@ -2,7 +2,7 @@
 // so they never leak into the rest of the app. Brand tokens (var(--brand-*)) come
 // from the app's global :root, so previews render on-brand automatically.
 export const PREVIEW_STYLES = `
-.vg-screen{position:relative;display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden;font-family:var(--brand-font-body);color:var(--brand-text);background:var(--brand-background);font-size:11px;line-height:1.4}
+.vg-screen{position:relative;display:flex;flex-direction:column;width:100%;height:100%;overflow:hidden;font-family:var(--brand-font-body);color:var(--brand-text);background:var(--brand-background);font-size:calc(11px * var(--vg-font-scale, 1));line-height:1.4}
 .vg-screen *{box-sizing:border-box}
 .vg-row{display:flex;align-items:center}
 .vg-col{display:flex;flex-direction:column}

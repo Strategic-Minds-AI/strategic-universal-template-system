@@ -10,6 +10,9 @@ export const DEFAULT_CONFIG = {
   subtitle: "Workspace summary",
   brandName: "Atlas Industries",
   themeMode: "light",
+  fontColor: "",
+  fontFamily: "Roboto",
+  fontScale: 1,
 };
 
 export const PRESETS = [
@@ -21,6 +24,23 @@ export const PRESETS = [
   { name: "Teal", primary: "#0d9488", secondary: "#134e4a" },
   { name: "Mono", primary: "#111827", secondary: "#000000" },
 ];
+
+export const FONT_OPTIONS = [
+  "Roboto", "Inter", "Poppins", "Montserrat", "Open Sans", "Lato", "Raleway",
+  "Nunito", "Ubuntu", "Playfair Display", "Merriweather", "Source Sans 3",
+  "Work Sans", "DM Sans", "Manrope", "Rubik", "Quicksand", "Josefin Sans",
+  "Cabin", "Barlow", "Karla", "Mulish", "Heebo", "Titillium Web", "Fira Sans",
+  "Oswald", "Archivo", "Space Grotesk", "Sora", "Lexend", "Plus Jakarta Sans",
+];
+
+export function loadFont(family) {
+  if (typeof document === "undefined") return;
+  const id = "vg-google-fonts";
+  const href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family).replace(/%20/g, "+")}:wght@400;500;700;900&display=swap`;
+  let link = document.getElementById(id);
+  if (!link) { link = document.createElement("link"); link.id = id; link.rel = "stylesheet"; document.head.appendChild(link); }
+  link.href = href;
+}
 
 /* ---------- color utils ---------- */
 const clamp = (n) => Math.max(0, Math.min(255, n));
@@ -72,6 +92,9 @@ export function themeToCssVars(config) {
     "--brand-on-primary": contrastColor(primary),
     "--vg-chip-bg": dark ? hexToRgba(primary, 0.22) : lighten(primary, 0.86),
     "--vg-chip-fg": dark ? lighten(primary, 0.3) : darken(primary, 0.2),
+    "--brand-font-body": `'${c.fontFamily}', sans-serif`,
+    "--brand-font-heading": `'${c.fontFamily}', sans-serif`,
+    "--vg-font-scale": String(c.fontScale || 1),
   };
   if (dark) {
     vars["--brand-background"] = "#0b1020";
@@ -90,6 +113,7 @@ export function themeToCssVars(config) {
     vars["--brand-border"] = "#e2e8f0";
     vars["--brand-card-subtle"] = "#f7faff";
   }
+  if (c.fontColor) vars["--brand-text"] = c.fontColor;
   return vars;
 }
 
