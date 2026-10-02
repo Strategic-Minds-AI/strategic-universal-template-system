@@ -1,0 +1,60 @@
+{
+  "name": "Tenant",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Tenant name"
+    },
+    "slug": {
+      "type": "string",
+      "title": "Tenant slug"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "starter",
+        "growth",
+        "enterprise"
+      ],
+      "default": "sandbox",
+      "title": "Plan tier"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "archived"
+      ],
+      "default": "active",
+      "title": "Tenant status"
+    },
+    "settings": {
+      "type": "object",
+      "title": "Tenant settings"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

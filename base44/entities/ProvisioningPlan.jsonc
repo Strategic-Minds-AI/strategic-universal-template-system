@@ -1,0 +1,116 @@
+{
+  "name": "ProvisioningPlan",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "template_id": {
+      "type": "string",
+      "title": "Provisioning template id"
+    },
+    "plan": {
+      "type": "object",
+      "title": "Full plan (current_state, desired_state, diff, actions, risks, rollback)"
+    },
+    "current_state": {
+      "type": "object",
+      "title": "Current known state"
+    },
+    "desired_state": {
+      "type": "object",
+      "title": "Desired state"
+    },
+    "diff": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "State diff"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Planned actions"
+    },
+    "risk_summary": {
+      "type": "object",
+      "title": "Risk summary"
+    },
+    "credential_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Required credentials (by reference)"
+    },
+    "rollback": {
+      "type": "object",
+      "title": "Rollback plan"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "awaiting_approval",
+        "approved",
+        "executing",
+        "complete",
+        "rolled_back",
+        "cancelled"
+      ],
+      "default": "draft",
+      "title": "Plan status"
+    },
+    "dry_run": {
+      "type": "boolean",
+      "default": true,
+      "title": "Dry run (no live mutation)"
+    }
+  },
+  "required": [
+    "project_id",
+    "template_id",
+    "plan",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

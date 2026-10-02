@@ -1,0 +1,107 @@
+{
+  "name": "Artifact",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "run_id": {
+      "type": "string",
+      "title": "GeneratorRun reference"
+    },
+    "step_key": {
+      "type": "string",
+      "title": "Source step key"
+    },
+    "name": {
+      "type": "string",
+      "title": "Artifact filename"
+    },
+    "media_type": {
+      "type": "string",
+      "title": "Media type"
+    },
+    "path": {
+      "type": "string",
+      "title": "Logical path within packet"
+    },
+    "storage_ref": {
+      "type": "string",
+      "title": "Storage reference (file_uri or inline)"
+    },
+    "content": {
+      "type": "string",
+      "title": "Inline content (for text artifacts)"
+    },
+    "sha256": {
+      "type": "string",
+      "title": "Content SHA-256",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "size_bytes": {
+      "type": "number",
+      "title": "Size in bytes"
+    },
+    "metadata": {
+      "type": "object",
+      "title": "Artifact metadata"
+    },
+    "validation_state": {
+      "type": "string",
+      "enum": [
+        "unvalidated",
+        "valid",
+        "invalid",
+        "blocked"
+      ],
+      "default": "unvalidated",
+      "title": "Validation state"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Artifact dependencies"
+    }
+  },
+  "required": [
+    "run_id",
+    "name",
+    "media_type",
+    "sha256"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

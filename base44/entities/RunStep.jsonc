@@ -1,0 +1,131 @@
+{
+  "name": "RunStep",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "title": "GeneratorRun reference"
+    },
+    "step_key": {
+      "type": "string",
+      "title": "Step key (node id from DAG)"
+    },
+    "step_type": {
+      "type": "string",
+      "enum": [
+        "transform",
+        "template",
+        "ai_generate",
+        "ai_evaluate",
+        "code_execute",
+        "test",
+        "validate_schema",
+        "validate_content",
+        "validate_security",
+        "validate_visual",
+        "adapter_read",
+        "adapter_write",
+        "approval",
+        "branch",
+        "fanout",
+        "reduce",
+        "package",
+        "checksum",
+        "export"
+      ],
+      "title": "Step type"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "running",
+        "passed",
+        "failed",
+        "blocked",
+        "cancelled",
+        "skipped",
+        "dead_letter"
+      ],
+      "default": "pending",
+      "title": "Step status"
+    },
+    "attempt_count": {
+      "type": "number",
+      "default": 0,
+      "title": "Attempt count"
+    },
+    "node_config": {
+      "type": "object",
+      "title": "Node configuration snapshot"
+    },
+    "input": {
+      "type": "object",
+      "title": "Step input"
+    },
+    "output": {
+      "type": "object",
+      "title": "Step output"
+    },
+    "error": {
+      "type": "object",
+      "title": "Structured error"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "title": "Idempotency key"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Started at"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Completed at"
+    },
+    "child_run_id": {
+      "type": "string",
+      "title": "Child run reference (for compose/fanout)"
+    }
+  },
+  "required": [
+    "run_id",
+    "step_key",
+    "step_type",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

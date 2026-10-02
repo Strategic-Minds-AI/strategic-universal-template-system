@@ -1,0 +1,77 @@
+{
+  "name": "AdapterDefinition",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "adapter_key": {
+      "type": "string",
+      "title": "Stable adapter key"
+    },
+    "name": {
+      "type": "string",
+      "title": "Adapter display name"
+    },
+    "version": {
+      "type": "string",
+      "title": "Adapter version"
+    },
+    "manifest": {
+      "type": "object",
+      "title": "Adapter manifest (capabilities, actions, config_schema)"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": false,
+      "title": "Enabled"
+    },
+    "health_state": {
+      "type": "string",
+      "enum": [
+        "not_configured",
+        "healthy",
+        "degraded",
+        "unhealthy",
+        "disabled"
+      ],
+      "default": "not_configured",
+      "title": "Health state"
+    },
+    "config_status": {
+      "type": "object",
+      "title": "Configuration status (required secrets/connections)"
+    },
+    "secret_references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Required secret reference names"
+    }
+  },
+  "required": [
+    "adapter_key",
+    "name",
+    "manifest"
+  ],
+  "rls": {
+    "read": true,
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

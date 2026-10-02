@@ -1,0 +1,105 @@
+{
+  "name": "TemplatePack",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "template_key": {
+      "type": "string",
+      "title": "Stable template key"
+    },
+    "name": {
+      "type": "string",
+      "title": "Template pack name"
+    },
+    "version": {
+      "type": "string",
+      "title": "Semantic version",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "text",
+        "file_tree",
+        "code",
+        "prompt",
+        "document",
+        "config",
+        "sql",
+        "ui_recipe",
+        "workflow_recipe",
+        "provisioning_recipe",
+        "compound"
+      ],
+      "title": "Template mode"
+    },
+    "manifest": {
+      "type": "object",
+      "title": "Template manifest (files, variables_schema, dependencies)"
+    },
+    "sha256": {
+      "type": "string",
+      "title": "Manifest SHA-256"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "validated",
+        "published",
+        "deprecated"
+      ],
+      "default": "draft",
+      "title": "Status"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Dependency template keys"
+    }
+  },
+  "required": [
+    "template_key",
+    "name",
+    "version",
+    "mode",
+    "manifest"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

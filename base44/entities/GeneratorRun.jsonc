@@ -1,0 +1,131 @@
+{
+  "name": "GeneratorRun",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "project_id": {
+      "type": "string",
+      "title": "Project reference"
+    },
+    "generator_id": {
+      "type": "string",
+      "title": "GeneratorDefinition reference"
+    },
+    "generator_key": {
+      "type": "string",
+      "title": "Generator key (denormalized)"
+    },
+    "generator_version": {
+      "type": "string",
+      "title": "Generator version"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "VALIDATING_INPUT",
+        "PLANNING",
+        "WAITING_APPROVAL",
+        "QUEUED",
+        "RUNNING",
+        "VALIDATING",
+        "REPAIRING",
+        "PASSED",
+        "FAILED",
+        "BLOCKED",
+        "CANCELLED",
+        "EXPORTED"
+      ],
+      "default": "DRAFT",
+      "title": "Run status"
+    },
+    "input": {
+      "type": "object",
+      "title": "Normalized run input"
+    },
+    "input_hash": {
+      "type": "string",
+      "title": "SHA-256 of normalized input"
+    },
+    "seed": {
+      "type": "string",
+      "title": "Deterministic seed"
+    },
+    "run_manifest": {
+      "type": "object",
+      "title": "Immutable run manifest (versions, hashes, reproducibility)"
+    },
+    "parent_run_id": {
+      "type": "string",
+      "title": "Parent run (for child runs)"
+    },
+    "root_run_id": {
+      "type": "string",
+      "title": "Root run id (top of child chain)"
+    },
+    "depth": {
+      "type": "number",
+      "default": 0,
+      "title": "Child-run depth"
+    },
+    "result": {
+      "type": "object",
+      "title": "Final output summary"
+    },
+    "error": {
+      "type": "object",
+      "title": "Terminal error"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Started at"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Completed at"
+    }
+  },
+  "required": [
+    "generator_id",
+    "generator_version",
+    "status",
+    "input_hash"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

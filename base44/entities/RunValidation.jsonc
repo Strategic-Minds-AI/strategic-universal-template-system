@@ -1,0 +1,111 @@
+{
+  "name": "RunValidation",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "run_id": {
+      "type": "string",
+      "title": "GeneratorRun reference"
+    },
+    "validator_id": {
+      "type": "string",
+      "title": "Validator identifier"
+    },
+    "validator_layer": {
+      "type": "string",
+      "enum": [
+        "schema",
+        "completeness",
+        "lint",
+        "typecheck",
+        "compile",
+        "unit",
+        "integration",
+        "e2e",
+        "visual_regression",
+        "accessibility",
+        "security",
+        "dependency",
+        "secret_scan",
+        "data_integrity",
+        "artifact_integrity",
+        "backend_parity",
+        "acceptance"
+      ],
+      "title": "Validation layer"
+    },
+    "subject_hash": {
+      "type": "string",
+      "title": "SHA-256 of validated subject"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ],
+      "title": "Result"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Evidence entries"
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "title": "Failure entries"
+    },
+    "mandatory": {
+      "type": "boolean",
+      "default": true,
+      "title": "Mandatory for release"
+    }
+  },
+  "required": [
+    "run_id",
+    "validator_id",
+    "subject_hash",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

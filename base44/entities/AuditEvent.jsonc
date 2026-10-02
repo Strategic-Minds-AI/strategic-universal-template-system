@@ -1,0 +1,72 @@
+{
+  "name": "AuditEvent",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "actor_id": {
+      "type": "string",
+      "title": "Actor user id"
+    },
+    "event_type": {
+      "type": "string",
+      "title": "Event type"
+    },
+    "entity_type": {
+      "type": "string",
+      "title": "Entity type"
+    },
+    "entity_id": {
+      "type": "string",
+      "title": "Entity id"
+    },
+    "payload": {
+      "type": "object",
+      "title": "Event payload"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "info",
+        "warn",
+        "error",
+        "critical"
+      ],
+      "default": "info",
+      "title": "Severity"
+    }
+  },
+  "required": [
+    "event_type",
+    "entity_type",
+    "entity_id",
+    "payload"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

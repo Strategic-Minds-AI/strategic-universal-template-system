@@ -1,0 +1,87 @@
+{
+  "name": "Approval",
+  "type": "object",
+  "properties": {
+    "tenant_id": {
+      "type": "string",
+      "title": "Tenant reference"
+    },
+    "run_id": {
+      "type": "string",
+      "title": "GeneratorRun reference"
+    },
+    "action_key": {
+      "type": "string",
+      "title": "Action requiring approval"
+    },
+    "risk_class": {
+      "type": "string",
+      "enum": [
+        "READ",
+        "DRAFT",
+        "BRANCH_WRITE",
+        "PROTECTED"
+      ],
+      "title": "Risk class"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "expired"
+      ],
+      "default": "pending",
+      "title": "Approval status"
+    },
+    "request": {
+      "type": "object",
+      "title": "Approval request payload"
+    },
+    "resolved_by_id": {
+      "type": "string",
+      "title": "Resolver user id"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Resolved at"
+    },
+    "reason": {
+      "type": "string",
+      "title": "Approval/rejection reason"
+    }
+  },
+  "required": [
+    "run_id",
+    "action_key",
+    "status",
+    "request"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": true,
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
