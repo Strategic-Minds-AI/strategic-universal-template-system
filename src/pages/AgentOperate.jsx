@@ -34,10 +34,18 @@ export default function AgentOperate() {
       </div>
 
       <div className="xa-card p-4 mb-4">
-        <h2 className="text-xs font-bold uppercase tracking-wide mb-2 flex items-center gap-1"><Terminal className="w-3.5 h-3.5 text-[#CCBB00]" /> Tools</h2>
-        <div className="flex flex-wrap gap-1.5">
+        <h2 className="text-xs font-bold uppercase tracking-wide mb-2 flex items-center gap-1"><Terminal className="w-3.5 h-3.5 text-[#CCBB00]" /> Entity Tools · Tier {agent.tier} (full CRUD)</h2>
+        <div className="space-y-1.5 mb-3">
+          {(agent.tool_configs || []).map((t) => (
+            <div key={t.entity_name} className="flex items-center justify-between text-[11px]">
+              <span className="font-mono font-semibold text-foreground">{t.entity_name}</span>
+              <span className="font-mono text-muted-foreground">{t.allowed_operations.join(" · ")}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-1.5 pt-3 border-t border-border">
           {agent.tools.map((t) => (
-            <span key={t} className="text-[11px] font-mono text-foreground bg-muted px-2 py-1 rounded">{t}</span>
+            <span key={t} className="text-[11px] font-mono text-muted-foreground bg-muted px-2 py-1 rounded">{t}</span>
           ))}
         </div>
       </div>
