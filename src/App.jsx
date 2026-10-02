@@ -38,6 +38,7 @@ import BootstrapWizard from '@/pages/BootstrapWizard';
 import AgentOperate from '@/pages/AgentOperate';
 import LeadScraper from '@/pages/LeadScraper';
 import DigitalDominance from '@/pages/DigitalDominance';
+import UniversalProvisioning from '@/pages/UniversalProvisioning';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -95,6 +96,7 @@ const AuthenticatedApp = () => {
           <Route path="/agents/chat" element={<AgentOperate />} />
           <Route path="/lead-scraper" element={<LeadScraper />} />
           <Route path="/digital-dominance" element={<DigitalDominance />} />
+          <Route path="/provisioning-system" element={<UniversalProvisioning />} />
         </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />
