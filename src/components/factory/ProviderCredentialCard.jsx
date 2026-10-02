@@ -46,7 +46,7 @@ export default function ProviderCredentialCard({ provider, existing, onSaved }) 
         manifest: { capabilities: provider.capabilities, config_schema: { type: "object", properties: {} } },
         enabled: ready,
         health_state: health,
-        secret_references: provider.secret_references,
+        secret_references: provider.secret_references.map((s) => (typeof s === "string" ? s : s.name)),
         config_status: { ...cleanConfig, secrets: secretValues, secrets_provided: Object.fromEntries(provider.secret_references.map((s) => { const name = typeof s === "string" ? s : s.name; return [name, !!(secretValues[name] || "").trim()]; })), configured_at: new Date().toISOString() },
       };
       if (existing?.id) {
