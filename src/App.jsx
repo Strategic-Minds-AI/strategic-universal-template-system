@@ -15,6 +15,22 @@ import Projects from '@/pages/Projects';
 import Builder from '@/pages/Builder';
 import Library from '@/pages/Library';
 import Consulting from '@/pages/Consulting';
+import FactoryLayout from '@/components/factory/FactoryLayout';
+import Dashboard from '@/pages/Dashboard';
+import GeneratorLibrary from '@/pages/GeneratorLibrary';
+import GeneratorStudio from '@/pages/GeneratorStudio';
+import TemplateLibrary from '@/pages/TemplateLibrary';
+import RunConsole from '@/pages/RunConsole';
+import ArtifactExplorer from '@/pages/ArtifactExplorer';
+import ValidationCenter from '@/pages/ValidationCenter';
+import RepairCenter from '@/pages/RepairCenter';
+import ProvisioningCenter from '@/pages/ProvisioningCenter';
+import Approvals from '@/pages/Approvals';
+import AdapterLibrary from '@/pages/AdapterLibrary';
+import IndustryPacks from '@/pages/IndustryPacks';
+import UsageBudgets from '@/pages/UsageBudgets';
+import AuditReceipts from '@/pages/AuditReceipts';
+import Settings from '@/pages/Settings';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -48,7 +64,24 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/" element={<Projects />} />
+        <Route element={<FactoryLayout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/generators" element={<GeneratorLibrary />} />
+          <Route path="/studio" element={<GeneratorStudio />} />
+          <Route path="/templates" element={<TemplateLibrary />} />
+          <Route path="/runs" element={<RunConsole />} />
+          <Route path="/artifacts" element={<ArtifactExplorer />} />
+          <Route path="/validation" element={<ValidationCenter />} />
+          <Route path="/repair" element={<RepairCenter />} />
+          <Route path="/provisioning" element={<ProvisioningCenter />} />
+          <Route path="/approvals" element={<Approvals />} />
+          <Route path="/adapters" element={<AdapterLibrary />} />
+          <Route path="/industries" element={<IndustryPacks />} />
+          <Route path="/usage" element={<UsageBudgets />} />
+          <Route path="/audit" element={<AuditReceipts />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
         <Route path="/builder" element={<Builder />} />
         <Route path="/library/:family" element={<Library />} />
         <Route path="/consulting" element={<Consulting />} />
