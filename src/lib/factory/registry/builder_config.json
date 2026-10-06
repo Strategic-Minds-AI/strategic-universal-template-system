@@ -1,6 +1,6 @@
 {
   "name": "Universal Frontend Factory",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "default_mode": "guided",
   "modes": [
     "quickstart",
@@ -71,7 +71,13 @@
     "placeholder_format": "[TOKEN_NAME]"
   },
   "release_gate": "No production deploy, domain/DNS, payments, secrets, live messaging, or destructive action without explicit operator approval.",
-  "default_deploy_stack": { "backend": "supabase", "frontend": "vercel", "worker": "railway", "code": "github", "google": "google_workspace" },
+  "default_deploy_stack": {
+    "backend": "supabase",
+    "frontend": "vercel",
+    "worker": "railway",
+    "code": "github",
+    "google": "google_workspace"
+  },
   "quality_profile_default": "ceiling",
   "selection_order": [
     "platform",
@@ -91,8 +97,8 @@
     "responsive_overflow": "PASS required",
     "accessibility": "PASS required",
     "state_coverage": "PASS required",
-    "visual_coherence_min_score": 9.0,
-    "no_visual_category_below": 8.0,
+    "visual_coherence_min_score": 9,
+    "no_visual_category_below": 8,
     "reference_lock_similarity_target": ">=95% layout similarity when a visual reference is authoritative",
     "validator_independence": true,
     "max_automatic_repair_rounds": 5
@@ -107,5 +113,14 @@
       "high-contrast-light",
       "high-contrast-dark"
     ]
+  },
+  "swarm_nexus": {
+    "enabled": true,
+    "module": "src/lib/factory/swarmNexusWebsiteFactory.js",
+    "commander": "apex_agent_zero",
+    "queue_model": "BatchOperation + AgentTask",
+    "execution_mode_default": "shadow",
+    "checkpoint_after_every_wave": true,
+    "context": "mass website factory"
   }
 }
